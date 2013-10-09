@@ -1,0 +1,1564 @@
+http://www.wohok.com/mandarin/courses/hsk1/eng/introduction.html
+
+我 (wǒ) I i_NP
+你 (nǐ) you (singular) youSg_NP
+我们 (wǒ men) we we_NP
+他 (tā) he he_NP
+她 (tā) she she_NP
+爱 (ài) to love love_V2
+喜欢 (xǐ huan) to like like_V2 like_VV
+和 (hé) with, and with_Prep
+很 (hěn) very, quite very_AdA verymuch_Adv
+都 (dōu) all, both all_Predet, all_NP
+高兴 (gāo xìng) happy, glad, cheerful happy_A
+漂亮 (piào liang) pretty, beautiful beautiful_A
+
+
+个 (gè) Measure word (MW)
+这 (zhè) this this_Det, 
+-  这个 this_NP
+那 (nà) that_Det
+- 那个 that_NP
+些 (xiē) some, few, several
+- 这些  these_NP
+- 那些  those_NP
+
+是 (shì) to be
+- 这是我 This is me
+的 (de) of
+朋友 (péng you) friend friend_N
+-- 这是我朋友的朋友 - This is my friend's friend
+
+好 (hǎo) good, nice, very  good_A very_AdA
+-- 我好高兴 I am very happy
+
+人 (rén) person,  people  person_N
+
+
+了 (le) Character indicating past or change
+-- 我好了 I'm fine (now)
+太 (tài) too, extremely  too_AdA, extremely_AdA
+-- 太好了! Great!  great_Interj
+
+衣服 (yī fu) - clothes	clothes_N
+
+买 (mǎi) to buy buy_V2
+-- 我买了衣服 I bought clothes
+-- 我买衣服了 I bought clothes
+-- 我买的衣服都很漂亮 The clothes I've bought do all look great
+
+
+大 (dà) big, great  big_A
+-- 我买的衣服太大了 The clothes I bought are too big
+小 (xiǎo) - small small_A
+
+不 (bù) not
+有 (yǒu) to have  have_V2
+没 (méi) not
+
+钱 (qián) money money_N
+
+-- 我没买这个 - I didn't buy this
+-- 我没有买这个 -I didn't buy this
+
+吗 (ma) question
+呢 (ne) follow-up
+-- 你喜欢买衣服 You like buying clothes
+-- 你喜欢买衣服吗? Do you like buying clothes?
+-- 你爱她吗? Do you love her?
+
+
+谁 (shéi) who who_IP
+什么 (shén me) what_IP
+
+书 (shū) 本 (běn) book book_N
+哪 (nǎ) which
+- 哪 (nǎ) which_IDet (with classif)
+- 哪些 whichPl_IDet (without classif)
+
+几 (jǐ) how many, several how_many_IDet several_Det
+
+-- 你喜欢哪本书 Which book do you like?
+-- 我喜欢这本书 I like this book
+-- 这本书 This book
+-- 他喜欢这些书 He likes those books
+-- 他喜欢哪些书 Which books does he like?
+-- 这些书 Those books
+
+
+几 (jǐ) - how many, several	
+-- 你买了几本书? How many books did you buy?
+-- 我买了几本书 I bought several books
+
+多少 (duō shao) - how many, how much how_much_IP
+-- 这本书多少钱? How much is this book?
+-- 你买了多少? How many/much did you buy?
+
+
+多 (duō) - much, many much_NP
+-- 我买了很多 I bought a lot
+-- 我买了不多 I didn't buy too many (not really 少, but I could have bought more)
+- 不多 not_many_NP
+
+少 (shǎo) - few, little	few_NP
+-- 我买了很少  I bought just a few
+-- 我买了不少  I bought quite a few (not really 多, but still quite a few)
+- 不少 quite_a_few_NP
+
+怎么 (zěn me) - how_IAdv	
+-- 这本书怎么买? How can you buy this book?
+-- 你怎么了? How are you? What's wrong?
+怎么样 (zěn me yàng) - how is/are, how about that? how_about_IAdv
+-- 这本书怎么养? How's that book? Do you like this book?
+-- 你怎么样? How are you?
+
+
+
+
+NP -> VP -> Cl
+V2 -> NP -> VP
+Adv -> VP -> VP
+AP -> VP
+A -> AP
+AdA -> A -> AP
+NP -> VP
+NP -> Det          -- with de
+Det -> CN -> NP
+N -> CN
+NP -> V2 -> RS
+CN -> RS -> NP
+Cl -> S            -- with le
+Cl -> S            -- with bu/mei
+Cl -> QS           -- with ma
+Cl -> QS           -- with ne
+VV -> VP -> VP 
+Cl -> QS           -- with bu/mei V n V
+NP -> V2 -> IP -> QCl
+IP -> VP -> QCl
+IDet -> CN -> IP
+
+
+
+-- 这是你的朋友 - This is your friend
+-- 这是不是你的朋友? - Is this your friend?
+-- 他有钱 - He has money
+-- 他有没有钱? - Does he have money?
+-- 你喜欢买衣服 - You like buying clothes
+-- 你喜不喜欢买衣服? - Do you like buying clothes?
+-- 你买不买? - Do you buy it?
+
+
+-------------------------
+
+Places
+Here and There
+
+Vocabularies
+天气 (tiān qì) - weather	
+天气 (tiān qì)
+English:
+weather
+Example:
+(see below)
+
+
+这儿 (zhè r) - here	
+这儿 (zhè r)
+English:
+here
+Example:
+这儿的天气很好
+The weather here is very good
+
+
+那儿 (nà r) - there	
+那儿 (nà r)
+English:
+there
+Example:
+那儿的天气很好
+The weather there is very good
+
+
+里 (lǐ) - in, inside, MW for
+0.5 km	
+里 (lǐ)
+English:
+in, inside, MW for 0.5 km
+Example:
+这里的天气很好
+The weather here is very good
+那里的天气很好
+The weather there is very good
+
+
+no picture available	
+在 (zài)
+English:
+at, on, character indicating action in progress
+Example:
+在那儿天气怎么样?
+How's the weather there?
+在这里天气很好
+The weather here is quite good
+
+
+冷 (lěng) - cold	
+冷 (lěng)
+English:
+cold
+Example:
+这里的天气很冷
+It's quite cold here
+
+
+热 (rè) - hot, warm	
+热 (rè)
+English:
+hot, warm
+Example:
+这里的天气很热
+It's quite hot here
+
+
+no picture available	
+住 (zhù)
+English:
+to live, to stay, to reside
+Example:
+你住在哪儿?
+Where do you live?
+你住在哪里?
+Where do you live?
+
+
+北京 (Běi jīng) - Beijing	
+北京 (Běi jīng)
+English:
+Beijing
+Example:
+我住在北京
+I live in Beijing
+
+
+中国 (Zhōng guó) - China	
+中国 (Zhōng guó)
+English:
+China
+Example:
+我住在中国
+I live in China
+
+
+
+
+Up and Down
+
+Vocabularies
+去 (qù) - to go	
+去 (qù)
+English:
+to go
+Example:
+我去你那儿
+I'm coming to you
+你去哪儿?
+Where are you going?
+我去北京
+I go to Beijing
+我去买衣服
+I go shopping for clothes
+
+
+来 (lái) - to come, to arrive,
+ever since	
+来 (lái)
+English:
+to come, to arrive, ever since
+Example:
+你来我这儿
+Come to me
+你来吗?
+Are you coming?
+我来了
+I'm here/I arrived
+
+
+上 (shàng) - to go up, to attend,
+to climb, on, upon,
+previous, upper	
+上 (shàng)
+English:
+to go up, to attend, to climb, on, upon, previous, upper
+Example:
+我上去
+I'm coming up
+你上来吗?
+Are you coming up?
+
+
+no picture available	
+下 (xià)
+English:
+descend, fall, below, down, under, MW for times of action
+Example:
+你下来吗?
+Are you coming down?
+我下去
+I'm coming down
+
+
+
+
+Before and Behind
+
+Vocabularies
+工作 (gōng zuò) - job, to work	
+工作 (gōng zuò)
+English:
+job, to work
+Example:
+你的工作是什么?
+What's your job?
+
+
+医生 (yī shēng) - doctor	
+医生 (yī shēng)
+English:
+doctor
+Example:
+我是医生
+I'm a doctor
+
+
+医院 (yī yuàn) - hospital	
+医院 (yī yuàn)
+English:
+hospital
+Example:
+我在医院工作
+I work at the hospital
+
+
+饭馆 (fàn guǎn) - restaurant	
+饭馆 (fàn guǎn)
+English:
+restaurant
+Example:
+这是一个很好的饭馆
+This is a very good restaurant
+
+
+商店 (shāng diàn) - shop, store	
+商店 (shāng diàn)
+English:
+shop, store
+Example:
+这个商店很大
+This shop is quite big
+
+
+前面 (qián miàn) - ahead, in front	
+前面 (qián miàn)
+English:
+ahead, in front
+Example:
+在医院的前面有个很小的商店
+There's a small shop in front of the hospital
+
+
+后面 (hòu miàn) - rear, back, behind	
+后面 (hòu miàn)
+English:
+rear, back, behind
+Example:
+在医院的后面有个我很喜欢的饭馆
+At the back of the hospital is a restaurant I like a lot
+
+
+先生 (xiān sheng) - Mister (Mr.),
+teacher	
+先生 (xiān sheng)
+English:
+Mister (Mr.), teacher
+Example:
+钱先生，你好
+Hello Mr. Qian
+
+
+--------------------------
+
+Numbers, Time and Dates
+Numbers
+
+Vocabularies
+十 (shí) - 10	
+十 (shí)
+English:
+10
+Example:
+我有十个朋友
+I have 10 friends
+
+
+一 (yī) - 1	
+一 (yī)
+English:
+1
+Example:
+十一
+11
+一个朋友
+a friend
+
+
+二 (èr) - 2	
+二 (èr)
+English:
+2
+Example:
+十二
+12
+二十
+20
+二十一
+21
+二十二
+22
+
+
+三 (sān) - 3	
+三 (sān)
+English:
+3
+Example:
+十三
+13
+三十二
+32
+三本书
+3 books
+
+
+四 (sì) - 4	
+四 (sì)
+English:
+4
+Example:
+十四
+14
+四十一
+41
+四个人
+4 people
+
+
+五 (wǔ) - 5	
+五 (wǔ)
+English:
+5
+Example:
+十五
+15
+五十四
+54
+
+
+六 (liù) - 6	
+六 (liù)
+English:
+6
+Example:
+十六
+16
+六十六
+66
+
+
+七 (qī) - 7	
+七 (qī)
+English:
+7
+Example:
+十七
+17
+七十二
+72
+
+
+八 (bā) - 8	
+八 (bā)
+English:
+8
+Example:
+十八
+18
+八十四
+84
+
+
+九 (jiǔ) - 9	
+九 (jiǔ)
+English:
+9
+Example:
+十九
+19
+九十九
+99
+
+
+零 (líng) - 0	
+零 (líng)
+English:
+0
+Example:
+零下四
+-4 (for temperature)
+零下十一
+-11 (for temperature)
+
+
+
+
+Time
+
+Vocabularies
+点 (diǎn) - point, dot, to nod, to
+click, MW for a
+little, a bit	
+点 (diǎn)
+English:
+point, dot, to nod, to click, MW for a little, a bit
+Example:
+一点儿
+a little bit (儿 is pronounced more or less like an R, er in Pinyin)
+这里有点儿冷
+It's a little bit cold here
+
+
+现在 (xiàn zài) - now	
+现在 (xiàn zài)
+English:
+now
+Example:
+现在几点?
+What's the time?
+
+
+分钟 (fēn zhōng) - minute	
+分钟 (fēn zhōng)
+English:
+minute
+Example:
+30分钟
+30 minutes
+48分钟
+48 minutes
+9点25分钟
+9:25
+9点25 分
+9:25
+12点55 分
+12:55
+现在2点5 分
+It's 2:05
+
+
+上午 (shàng wǔ) - morning	
+上午 (shàng wǔ)
+English:
+morning
+Example:
+上午9点15 分
+9:15 a.m.
+
+
+中午 (zhōng wǔ) - noon, midday	
+中午 (zhōng wǔ)
+English:
+noon, midday
+Example:
+中午11点50 分
+11:50 a.m.
+
+
+下午 (xià wǔ) - afternoon	
+下午 (xià wǔ)
+English:
+afternoon
+Example:
+下午3点35分
+3:35 p.m.
+
+
+
+
+Date
+
+Vocabularies
+时候 (shí hou) - time, moment,
+period	
+时候 (shí hou)
+English:
+time, moment, period
+Example:
+么时候来
+when
+你什么时候来?
+When do you come?
+
+
+昨天 (zuó tiān) - yesterday	
+昨天 (zuó tiān)
+English:
+yesterday
+Example:
+我昨天来了
+I came yesterday
+
+
+今天 (jīn tiān) - today	
+今天 (jīn tiān)
+English:
+today
+Example:
+我今天来
+I'll come today
+我今天来了
+I came today
+
+
+明天 (míng tiān) - tomorrow	
+明天 (míng tiān)
+English:
+tomorrow
+Example:
+我明天来
+I'll come tomorrow
+
+
+月 (yuè) - month, moon	
+月 (yuè)
+English:
+month, moon
+Example:
+一月
+January
+二月
+February
+三月
+March
+四月
+April
+五月
+May
+六月
+June
+七月
+July
+八月
+August
+九月
+September
+十月
+October
+十一月
+November
+十二月
+December
+一个月
+1 month
+四个月
+4 months
+
+
+日 (rì) - day, sun	
+日 (rì)
+English:
+day, sun
+Example:
+8月3日
+August 3rd
+一天
+1 day
+四天
+4 days
+
+
+年 (nián) - year	
+年 (nián)
+English:
+year
+Example:
+2012年8月3日
+August 3rd, 2012
+1978年3月23日
+March 23rd, 1978
+2012年8月3日上午10点10分
+August 3rd, 2012 10:10 a.m.
+一年
+1 year
+四年
+4 years
+
+
+星期 (xīng qī) - week	
+星期 (xīng qī)
+English:
+week
+Example:
+星期一
+Monday
+星期二
+Tuesday
+星期三
+Wednesday
+星期四
+Thursday
+星期五
+Friday
+星期六
+Saturday
+星期日
+Sunday
+星期天
+Sunday
+今天星期六
+Today is Saturday (informal)
+今日星期六
+Today is Saturday (formal)
+明天星期天
+Tomorrow is Sunday (informal)
+明日星期日
+Tomorrow is Sunday (formal)
+一个星期
+1 week
+四个星期
+4 weeks
+
+
+---------------------------------------
+
+Eating and Drinking
+About Eating
+
+Vocabularies
+no picture available	
+东西 (dōng xi)
+English:
+thing
+Example:
+她很喜欢去买东西
+She likes to go shopping
+我买了很多东西
+I bought a lot of things
+
+
+吃 (chī) - to eat	
+吃 (chī)
+English:
+to eat
+Example:
+我很喜欢吃东西
+I like eating
+
+
+喝 (hē) - to drink	
+喝 (hē)
+English:
+to drink
+Example:
+(see below)
+
+
+茶 (chá) - tea	
+茶 (chá)
+English:
+tea
+Example:
+中国人很喜欢喝茶
+Chinese really like drinking tea
+
+
+小姐 (xiǎo jiě) - Miss, young lady,
+prostitute	
+小姐 (xiǎo jiě)
+English:
+Miss, young lady, prostitute
+Example:
+小姐，你好
+Hallo, Miss!
+她是个小姐
+She's a prostitute
+
+
+菜 (cài) - dish, vegetable	
+菜 (cài)
+English:
+dish, vegetable
+Example:
+小姐，点菜
+Miss, we want to order
+这个菜很好吃
+This dish is delicious
+这个菜多少钱?
+How much is this dish?
+
+
+要 (yào) - to want	
+要 (yào)
+English:
+to want
+Example:
+我要这个
+I want this
+我要这个菜
+I want this dish
+
+
+米饭 (mǐ fàn) - (cooked) rice	
+米饭 (mǐ fàn)
+English:
+(cooked) rice
+Example:
+我要一个米饭
+I want a bowl of rice
+
+
+块 (kuài) - MW for a piece or
+money	
+块 (kuài)
+English:
+MW for a piece or money
+Example:
+我要一块
+I want one piece
+这本书34块
+This book costs 34 RMB
+
+
+杯子 (bēi zi) - cup, glass	
+杯子 (bēi zi)
+English:
+cup, glass
+Example:
+我要一杯茶
+I want one cup of tea
+我杯子里的茶很好喝
+The tea in my cup is delicious
+
+
+no picture available	
+请 (qǐng)
+English:
+to ask, to invite, please
+Example:
+我请你吃饭
+I invite you for lunch/dinner
+我来
+I pay
+请
+Please!
+
+
+坐 (zuò) - to sit, to take (bus,
+train, etc.)	
+坐 (zuò)
+English:
+to sit, to take (bus, train, etc.)
+Example:
+请坐
+Please take a seat
+坐一下
+Take a seat
+
+
+椅子 (yǐ zi) - chair	
+椅子 (yǐ zi)
+English:
+chair
+Example:
+这个椅子太小了
+This seat is too small
+
+
+桌子 (zhuō zi) - table	
+桌子 (zhuō zi)
+English:
+table
+Example:
+桌子上的菜都很好吃
+The dishes on the table do all taste great
+
+
+狗 (gǒu) - dog	
+狗 (gǒu)
+English:
+dog
+Example:
+你的狗很漂亮
+Your dog is georgious
+
+
+猫 (māo) - cat	
+猫 (māo)
+English:
+cat
+Example:
+中国人都喜欢吃猫和狗吗?
+Do all Chinese like eating cats and dogs?
+
+
+谢谢 (xiè xie) - thanks	
+谢谢 (xiè xie)
+English:
+thanks
+Example:
+谢谢你
+Thank you!
+
+
+no picture available	
+不客气 (bú kè qi)
+English:
+you're welcome
+Example:
+谢谢
+Thanks
+不客气
+You're welcome
+
+
+
+
+Cooking
+
+Vocabularies
+no picture available	
+做 (zuò)
+English:
+to do, to make
+Example:
+我喜欢做饭
+I like cooking
+
+
+no picture available	
+会 (huì)
+English:
+meeting, conference, can, to be able to, indicating future tense
+Example:
+我会做饭
+I can cook
+我不会做饭
+I can't cook
+
+
+no picture available	
+能 (néng)
+English:
+ability, gift, energy, capable, able, to be able to
+Example:
+我不能做饭
+I'm not able to cook (today/now)
+
+
+水 (shuǐ) - water	
+水 (shuǐ)
+English:
+water
+Example:
+我要一杯水
+I want a glass of water
+
+
+no picture available	
+开 (kāi)
+English:
+to open, to start, to drive (car, etc.)
+Example:
+你要一杯水吗?
+Do you want a cup of water?
+我要一杯开水
+I want a cup of drinking water
+我要
+I do
+要
+Yes
+
+
+水果 (shuǐ guǒ) - fruit	
+水果 (shuǐ guǒ)
+English:
+fruit
+Example:
+你喜欢什么水果?
+Which fruits do you like?
+
+
+苹果 (píng guǒ) - apple	
+苹果 (píng guǒ)
+English:
+apple
+Example:
+我很喜欢吃苹果
+I really like eating apples
+这个苹果很好吃
+This apple is really good
+
+
+--------------------------------------
+
+Family & Friends
+People
+
+Vocabularies
+no picture available	
+叫 (jiào)
+English:
+to be called, to call, to shout
+Example:
+我叫...
+My name is …
+你好，我叫...
+Hello, my name is ...
+
+
+名字 (míng zi) - name	
+名字 (míng zi)
+English:
+name
+Example:
+你叫什么名字?
+What's your name?
+
+
+no picture available	
+岁 (suì)
+English:
+MW for years old
+Example:
+你几岁?
+How old are you?
+你多大?
+How old are you?
+我24岁
+I'm 24 years old
+他今年55岁
+He's 55 years old this year
+
+
+妈妈 (mā ma) - mother, mum	
+妈妈 (mā ma)
+English:
+mother, mum
+Example:
+这是我妈妈
+This is my mum
+
+
+爸爸 (bà ba) - father, dad	
+爸爸 (bà ba)
+English:
+father, dad
+Example:
+这是我爸爸
+This is my dad
+爸爸在哪儿?
+Where is dad?
+他在吃饭呢，你吃了吗?
+He's eating, have you eaten already?
+我吃了
+I've already eaten
+
+
+儿子 (ér zi) - son	
+儿子 (ér zi)
+English:
+son
+Example:
+这是我儿子
+This is my son
+
+
+女儿 (nǚ ér) - daughter	
+女儿 (nǚ ér)
+English:
+daughter
+Example:
+你的女儿很漂亮
+Your daughter is very beautiful
+
+
+家 (jiā) - family, home,
+houshold, MW for
+businesses,
+families, etc.	
+家 (jiā)
+English:
+family, home, houshold, MW for businesses, families, etc.
+Example:
+你家有几个人?
+How man people are there in your family?
+我的家有三个人，爸爸，妈妈和我
+There are 3 people in my family, my dad, my mum and me
+这个家有四个人，爸爸，妈妈，儿子 和女儿
+This family consists of 4 people, dad, mum, sun and daughter
+
+
+
+
+Grammar
+This grammar pattern can be used to say that somebody is doing something at the moment
+somebody/something 在 doing something (呢)
+Example:
+他在吃饭呢 - He's eating
+我在做饭 - I'm cooking
+
+
+Travelling Home
+
+Vocabularies
+no picture available	
+想 (xiǎng)
+English:
+to think, to miss, to want
+Example:
+我很想你
+I miss you
+我很想我的家
+I miss my family/I miss home
+我在想
+I'm thinking
+我在想我要吃什么
+I'm thinking what I should eat
+你想一想
+Think about it
+我想吃东西
+I want to eat something
+
+
+no picture available	
+回 (huí)
+English:
+to return, to answer, to reply, MW for events of action
+Example:
+我想回家
+I want to go home
+我明天回家
+I'll go home tomorrow
+
+
+no picture available	
+看见 (kàn jiàn)
+English:
+to see, to catch sight of
+Example:
+我在这儿，你能看见我吗?
+I'm here, can you see me?
+我看见你了
+I spotted you!
+
+
+火车站 (huǒ chē zhàn) - train station	
+火车站 (huǒ chē zhàn)
+English:
+train station
+Example:
+我是在火车站吃饭的
+I ate something at the train station
+火车站在那儿?
+Where is the train station?
+
+
+
+
+Grammar
+This pattern can be used to put emphasis on time, place or method of doing something
+somebody/something 是 time, place or method 的
+Example:
+我是在火车站吃饭的 - I had something at the train station
+你是坐火车回来的吗? - You came back by train?
+是，我是今天回来的 - Yes, I came back today
+
+
+Vocabularies
+飞机 (fēi jī) - airplane	
+飞机 (fēi jī)
+English:
+airplane
+Example:
+我坐飞机回家
+I'm going home by plane
+
+
+出租车 (chū zū chē) - taxi	
+出租车 (chū zū chē)
+English:
+taxi
+Example:
+我是坐出租车去火车站的
+I took a taxi to the train station
+
+
+再见 (zài jiàn) - goodbye, see you	
+再见 (zài jiàn)
+English:
+goodbye, see you
+Example:
+明天见
+See you tomorrow
+再见
+See you
+
+
+
+
+Activities
+
+Vocabularies
+看 (kàn) - to see, to watch, to
+look at	
+看 (kàn)
+English:
+to see, to watch, to look at
+Example:
+我在看你
+I'm looking at you
+
+
+电影 (diàn yǐng) - movie, film	
+电影 (diàn yǐng)
+English:
+movie, film
+Example:
+我和我的朋友们今天去看电影
+I and my friends are going to watch a film today
+你今天想去看电影吗?
+Do you want to go watch a film today?
+
+
+电视 (diàn shì) - TV(-set)	
+电视 (diàn shì)
+English:
+TV(-set)
+Example:
+我爸爸在看电视
+My dad is watching TV
+
+
+电脑 (diàn nǎo) - computer	
+电脑 (diàn nǎo)
+English:
+computer
+Example:
+我朋友的电脑很好
+My friend's computer is really good
+
+
+睡觉 (shuì jiào) - to sleep, to go to
+bed	
+睡觉 (shuì jiào)
+English:
+to sleep, to go to bed
+Example:
+我去睡觉
+I go to bed
+
+
+打电话 (dǎ diàn huà) - to make a phone
+call	
+打电话 (dǎ diàn huà)
+English:
+to make a phone call
+Example:
+我在打电话
+I'm calling somebody
+
+
+喂 (wèi) - to feed, to breed,
+hello	
+喂 (wèi)
+English:
+to feed, to breed, hello
+Example:
+喂，你好
+Hello (when answering the phone)
+我在喂狗
+I'm feeding the dog
+
+
+no picture available	
+下雨 (xià yǔ)
+English:
+to rain
+Example:
+你今天想去看电影吗?
+Do you want to go watch a film today?
+今天下雨了，我不想去
+It's raining today, I don't really want to go
+明天会下雨
+It might be raining tomorrow
+
+
+no picture available	
+对不起 (duì bu qǐ)
+English:
+sorry, I'm sorry
+Example:
+(see below)
+
+
+no picture available	
+认识 (rèn shi)
+English:
+understanding, knowledge, awareness, to know, to recognize, to understand, to be familiar with
+Example:
+对不起，我不认识他
+Sorry, I don't know him
+
+
+no picture available	
+没关系 (méi guān xi)
+English:
+it doesn't matter
+Example:
+对不起，我不认识你
+Sorry, I don't know you
+没关系，我叫Mike，我是你朋友的朋 友
+Doesn't matter, I'm Mike, I'm your friend's friend
+
+
+-------------------------------------
+
+Study
+Vocabularies
+学校 (xué xiào) - school	
+学校 (xué xiào)
+English:
+school
+Example:
+这是我的学校
+This is my school
+
+
+大学 (dàxué) - unviersity, college	
+大学 (dàxué)
+English:
+unviersity, college
+Example:
+我的大学很好
+My university is very good
+
+
+读 (dú) - to read aloud, study	
+读 (dú)
+English:
+to read aloud, study
+Example:
+我在北京大学读书
+I'm studying at Beijing university
+我在读书
+I'm reading/I'm studying
+我在看书
+I'm reading a book
+
+
+学习 (xué xí) - to study, to learn	
+学习 (xué xí)
+English:
+to study, to learn
+Example:
+我在北京大学学习
+I'm studying at Beijing university
+我在学习
+I'm studying
+
+
+汉语 (hàn yǔ) - Chinese language	
+汉语 (hàn yǔ)
+English:
+Chinese language
+Example:
+我很喜欢学习汉语
+I really like studying Chinese
+我很喜欢学汉语
+I really like studying Chinese
+
+
+学生 (xué sheng) - student, pupil	
+学生 (xué sheng)
+English:
+student, pupil
+Example:
+我是很好的学生
+I'm a good student
+
+
+同学 (tóng xué) - classmate	
+同学 (tóng xué)
+English:
+classmate
+Example:
+我的同学都很喜欢我
+My classmates do all like me a lot
+
+
+老师 (lǎo shī) - teacher	
+老师 (lǎo shī)
+English:
+teacher
+Example:
+我们的汉语老师很好
+Our Mandarin teacher is very good
+
+
+听 (tīng) - to listen, to hear, to
+obey, MW for
+canned beverages	
+听 (tīng)
+English:
+to listen, to hear, to obey, MW for canned beverages
+Example:
+(see below)
+
+
+说话 (shuō huà) - chat, talk, to speak,
+to talk, to gossip	
+说话 (shuō huà)
+English:
+chat, talk, to speak, to talk, to gossip
+Example:
+我很喜欢听我的老师说话
+I really like listening to what my teacher says
+
+
+字 (zì) - word, character	
+字 (zì)
+English:
+word, character
+Example:
+汉语有很多字
+Mandarin consists of many characters
+
+
+写 (xiě) - to write	
+写 (xiě)
+English:
+to write
+Example:
+老师在写汉字
+The teacher is writing characters
+
+
+
+--------------------------------------------------
+
+Grammar
+As listed in the HSK 1 outline, the following grammar patterns should be understood for HSK 1 (Source):
+Pronouns
+
+Personal Pronouns
+我，你，他，她，我们，你们，他们，她们
+Demonstrative Pronouns
+这，这儿，那，那儿
+Interrogative Pronouns
+谁，哪，哪儿，什么，多少，几，怎么，怎么样
+Numbers
+
+Time
+9点25分
+2013年2月三日
+星期五
+Age
+我今年25岁
+Amount of Money
+30块
+Number
+我的电话是47382940
+Measure Words
+
+After a Number
+4个
+7本
+After 这，那，几
+这个
+那本
+这些
+几个
+Adverbs
+
+Negation
+不: 我不喜欢你
+没: 我没有钱
+Degree
+很: 我很喜欢你
+太: 太多了
+Range
+都: 我们都很喜欢去买衣服
+Conjunction
+
+和: 我和你
+Preposition
+
+在: 我在北京
+Auxiliary Verb
+
+会: 我会做饭
+能: 我今天晚上不能来
+Auxiliary Word
+
+Structure
+的: 这是我的书
+Mood
+了: 我来了
+吗: 你喜欢我吗?
+呢: 他在那儿呢?
+Interjection
+
+喂: 喂，你好
+Declarative Sentence
+
+Affirmative
+明天星期五
+我认识你
+今天天气很好
+Denial
+不: 不在医院
+没: 她没去买东西
+Questions
+
+吗: 你喜欢我吗?
+呢: 我有电脑，你呢?
+谁: 你喜欢谁?
+哪: 哪一本书是你的?
+哪儿: 你昨天去了哪儿?
+什么: 你想喝什么茶?
+多少: 这本书多少钱?
+几: 你今年几岁了?
+怎么: 这个菜怎么做?
+怎么样: 你今天怎么样?
+Imperative Sentence
+
+请: 请坐
+Exclamatory Sentence
+
+太: 太好了
+Special Sentence Patterns
+
+是 Sentence
+他是北京人
+她是我的老师
+有 Sentence
+她有钱
+我有43本书
+是...的 Sentence
+Time: 我是昨天回来的
+Place: 我是在火车站吃饭的
+Method: 他是坐火车回来的
+State of Action
+
+Current Activity
+在...呢我在看电视呢
+
