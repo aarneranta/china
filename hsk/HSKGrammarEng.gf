@@ -93,7 +93,12 @@ concrete HSKGrammarEng of HSKGrammar =
    ]
 
      ** open SyntaxEng, ParadigmsEng, 
-           (M = MorphoEng), (I = IrregEng), (G = GrammarEng), (E = ExtraEng) in {
+           (M = MorphoEng), (I = IrregEng), (G = GrammarEng), (E = ExtraEng) 
+in {
+
+lincat
+  Day = PN ;
+  Month = PN ;
 
 lin
   PredDetNP det np = mkCl (mkNP det) np ;
@@ -150,5 +155,42 @@ lin
   uttPhr utt = mkPhr <utt : Utt> ;
 
   numeralNP num cn = mkNP <num : Numeral> <cn : CN> ;
+
+  time_N = mkN "time" ;
+  when_IAdv = lin IAdv {s = "when"} ;
+  yesterday_Adv = mkAdv "yesterday" ;
+  today_Adv = mkAdv "today" ;
+  tomorrow_Adv = mkAdv "tomorrow" ;
+
+  january_Month = mkPN "January" ;
+  february_Month = mkPN "February" ;
+  march_Month = mkPN "March" ;
+  april_Month = mkPN "April" ;
+  may_Month = mkPN "May" ;
+  june_Month = mkPN "June" ;
+  july_Month = mkPN "July" ;
+  august_Month = mkPN "August" ;
+  september_Month = mkPN "September" ;
+  october_Month = mkPN "October" ;
+  november_Month = mkPN "November" ;
+  december_Month = mkPN "December" ;
+
+  month_N = mkN "month" ;
+  moon_N = mkN "moon" ;
+  sun_N = mkN "sun" ;
+  day_N = mkN "day" ; 
+  year_N = mkN "year" ;
+  week_N = mkN "week" ;
+
+  monday_Day = mkPN "Monday" ;
+  tuesday_Day = mkPN "Tuesday" ;
+  wednesday_Day = mkPN "Wednesday" ;
+  thursday_Day = mkPN "Thursday" ;
+  friday_Day = mkPN "Friday" ;
+  saturday_Day = mkPN "Saturday" ;
+  sunday_Day = mkPN "Sunday" ;
+
+  monthPN d = d ;
+  dayPN d = d ;
 
   }

@@ -98,6 +98,10 @@ concrete HSKGrammarChi of HSKGrammar =
 
 flags coding = utf8 ;
 
+lincat
+  Day = PN ;
+  Month = PN ;
+
 lin
   PredDetNP det np = mkCl (lin NP {s = det.s}) (lin NP np) ;
   PredAP np ap = E.PredBareAP np ap ;
@@ -161,5 +165,42 @@ lin
   uttPhr utt = mkPhr <utt : Utt> ;
 
   numeralNP num cn = mkNP <num : Numeral> <cn : CN> ;
+
+  time_N = mkN "时候" ;
+  when_IAdv = lin IAdv {s = "么时候来"} ;
+  yesterday_Adv = mkAdv "昨天" ;
+  today_Adv = mkAdv "今天" ;
+  tomorrow_Adv = mkAdv "明天" ;
+
+  january_Month = mkPN "一月" ;
+  february_Month = mkPN "二月" ;
+  march_Month = mkPN "三月" ;
+  april_Month = mkPN "四月" ;
+  may_Month = mkPN "五月" ;
+  june_Month = mkPN "六月" ;
+  july_Month = mkPN "七月" ;
+  august_Month = mkPN "八月" ;
+  september_Month = mkPN "九月" ;
+  october_Month = mkPN "十月" ;
+  november_Month = mkPN "十一月" ;
+  december_Month = mkPN "十二月" ;
+
+  month_N = mkN "月" ;
+  moon_N = mkN "月" ;
+  sun_N = mkN "日" ;
+  day_N = mkN "日" "天" ; ---
+  year_N = mkN "年" [] ;
+  week_N = mkN "星期" ;
+
+  monday_Day = mkPN "星期一" ;
+  tuesday_Day = mkPN "星期二" ;
+  wednesday_Day = mkPN "星期三" ;
+  thursday_Day = mkPN "星期四" ;
+  friday_Day = mkPN "星期五" ;
+  saturday_Day = mkPN "星期六" ;
+  sunday_Day = mkPN "星期日" | mkPN "星期天" ;
+
+  monthPN d = d ;
+  dayPN d = d ;
 
   }

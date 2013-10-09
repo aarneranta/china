@@ -93,6 +93,9 @@ abstract HSKGrammar =
    ]
 
      ** {
+cat
+  Month ;
+  Day ;
 
 fun
   PredDetNP : Det -> NP -> Cl ;    -- this is me (zhe shi wo)
@@ -148,5 +151,45 @@ fun
   uttPhr : Utt -> Phr ;
 
   numeralNP : Numeral -> CN -> NP ;
+
+  time_N : N ; -- 时候
+  when_IAdv : IAdv ; -- 么时候来
+  yesterday_Adv : Adv ; -- 昨天
+  today_Adv : Adv ; -- 今天
+  tomorrow_Adv : Adv ; -- 明天
+
+  january_Month : Month ; -- 一月
+  february_Month : Month ;  -- 二月
+  march_Month : Month ; -- 三月
+  april_Month : Month ; -- 四月
+  may_Month : Month ; -- 五月
+  june_Month : Month ; -- 六月
+  july_Month : Month ; -- 七月
+  august_Month : Month ; -- 八月
+  september_Month : Month ; -- 九月
+  october_Month : Month ; -- 十月
+  november_Month : Month ; -- 十一月
+  december_Month : Month ; -- 十二月
+
+  month_N : N ; -- 月 
+  moon_N : N ; -- 月 
+  sun_N : N ; -- 日
+  day_N : N ; -- 日  天
+  year_N : N ; -- 年 []
+  week_N : N ; -- 星期
+
+  monday_Day : Day ; -- 星期一
+  tuesday_Day : Day ; -- 星期二
+  wednesday_Day : Day ; -- 星期三
+  thursday_Day : Day ; -- 星期四
+  friday_Day : Day ; -- 星期五
+  saturday_Day : Day ; -- 星期六
+  sunday_Day : Day ; -- 星期日 | 星期天
+
+  monthPN : Month -> PN ;
+  dayPN : Day -> PN ;
+
+  
+
 
   }
