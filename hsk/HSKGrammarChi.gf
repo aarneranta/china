@@ -2,9 +2,9 @@ concrete HSKGrammarChi of HSKGrammar =
 
   GrammarChi [
 
-   Phr, Utt, NP, VP, Cl, Adv, V2, AP, A, AdA, Det, S, QS, QCl, IP, IDet, IQuant,
+   Phr, Utt, NP, VP, Cl, Adv, V2, AP, A, AdA, Det, S, QS, QCl, IP, IDet, IQuant,N2,
    ClSlash, VPSlash, Pron, Pol, Temp, Tense, Ant, RS, RCl, RP, CN, Comp, VV, N, PN,
-   Predet, Prep, Quant, IQuant, Num, Interj, Numeral,
+   Predet, Prep, Quant, IQuant, Num, Interj, Numeral, VQ, IComp,
    IAdv, TTAnt, AAnter, ASimul, TPres, PPos, PNeg,
 
    PredVP,     -- NP -> VP -> Cl
@@ -44,6 +44,8 @@ concrete HSKGrammarChi of HSKGrammar =
    PrepNP,     -- Prep -> NP -> Adv
    AdjCN,      -- AP -> CN -> CN 
    UttInterj,  -- Interj -> Utt
+   ProgrVP,    -- VP -> VP
+   ComplN2,    -- N2 -> NP -> CN
 
    IdRP,
    NumSg,
@@ -66,8 +68,11 @@ concrete HSKGrammarChi of HSKGrammar =
    who_IP,
    here_Adv,
    there_Adv,
-   where_IAdv
---   in_Prep
+   where_IAdv,
+--   in_Prep,
+   want_VV,
+   can8know_VV,
+   can_VV
    ],
 
  NumeralChi - [pot2, pot2plus, pot3, pot3plus],  -- just 1--99
@@ -89,7 +94,28 @@ concrete HSKGrammarChi of HSKGrammar =
 --   live_V,
    go_V,
    come_V,
-   now_Adv
+   now_Adv,
+   eat_V2,
+   drink_V2,
+  sit_V, 
+  dog_N,
+  cat_N,
+  do_V2,
+  water_N,
+  fruit_N,
+  apple_N,
+  name_N,
+  airplane_N,
+  watch_V2,
+  television_N,
+  rain_V,
+  school_N,
+  university_N,
+  student_N,
+  teacher_N,
+  listen_V2,
+  write_V2,
+  sleep_V
 
    ]
 
@@ -206,5 +232,57 @@ lin
 
   monthPN d = d ;
   dayPN d = d ;
+
+  tea_N = mkN "茶" "杯子" ; 
+  chinese_N = mkN "中国人" ;
+  prostitute_N = mkN "小姐" ;
+  dish_N = mkN "菜" ;
+  vegetable_N = mkN "菜" ;
+  delicious_A = mkA "好吃" ;
+  want_V2 = mkV2 "要" ;
+  rice_N = mkN "米饭" ;
+  cup_N = mkN "杯子" [] ;
+  glass_N = mkN "杯子" [] ;
+  invite_V2 = mkV2 "请" ;
+  pay_V = mkV "来" ;
+  please_Interj = mkInterj "请" ;
+  chair_N = mkN "椅子" ;
+  table_N = mkN "桌子" ;
+  gorgeous_A = mkA "漂亮" ;
+  thanks_Interj = mkInterj "谢谢" | mkInterj "谢谢你" ;
+  you_are_welcome_Interj = mkInterj "不客气" ;
+  meeting_N = mkN "会" ;
+  cook_V = mkV "做饭" ;
+  have_name_Cl np pn = R.mkClause np.s (mkV "叫") pn.s ;
+  have_age_Cl np nu = R.mkClause (np.s ++ nu.s) (mkV "岁") ;
+  how_old_QS np = {s = np.s ++ (R.word "几岁" | R.word "多大")} ; ---
+  mum_N2 = mkN2 "妈妈" ;
+  dad_N2 = mkN2 "爸爸" ;
+  son_N2 = mkN2 "儿子" ;
+  daughter_N2 = mkN2 "女儿" ;
+  family_N = mkN "家" [] ;
+  miss_V2 = mkV2 "想" ;
+  think_VQ = mkVQ "想" ;
+  return_V = mkV "回" ;
+  see_V2 = mkV2 "看见" ;
+  train_station_N = mkN "火车站" ;
+  taxi_N = mkN "出租车" ;
+  see_you_tomorrow_Interj = mkInterj "明天见" ;
+  see_you_Interj = mkInterj "再见" ;
+  movie_N = mkN "电影" ;
+  computer_N = mkN "电脑" ;
+  go_to_bed_V = mkV "睡觉" ;
+  make_a_phone_call_V = mkV "打电" ;
+  feed_V2 = mkV2 "喂" ;
+  helloPhone_Interj = mkInterj "喂" ;
+  sorry_Interj = mkInterj "对不起" ;
+  know_V2 = mkV2 "认识" ;
+  it_doesnt_matter_Interj = mkInterj "没关系" ;
+  study_V = mkV "读" ;
+  study_V2 = mkV2 "学习" ;
+  chinese_NP = mkpNP "汉语" ;
+  classmate_N = mkN "同学" ;
+  chat_V = mkV "说话" ;
+  character_N = mkN "字" ;
 
   }

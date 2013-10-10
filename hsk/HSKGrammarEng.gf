@@ -2,9 +2,9 @@ concrete HSKGrammarEng of HSKGrammar =
 
   GrammarEng [
 
-   Phr, Utt, NP, VP, Cl, Adv, V2, AP, A, AdA, Det, S, QS, QCl, IP, IDet, IQuant,
+   Phr, Utt, NP, VP, Cl, Adv, V2, AP, A, AdA, Det, S, QS, QCl, IP, IDet, IQuant,N2,
    ClSlash, VPSlash, Pron, Pol, Temp, Tense, Ant, RS, RCl, RP, CN, Comp, VV, N, V, PN,
-   Predet, Prep, Quant, IQuant, Num, Interj, Numeral,
+   Predet, Prep, Quant, IQuant, Num, Interj, Numeral, VQ, IComp,
    IAdv, TTAnt, AAnter, ASimul, TPres, PPos, PNeg,
 
    PredVP,     -- NP -> VP -> Cl
@@ -43,6 +43,10 @@ concrete HSKGrammarEng of HSKGrammar =
    UsePN,      -- PN -> NP
    PrepNP,     -- Prep -> NP -> Adv
    AdjCN,      -- AP -> CN -> CN 
+   UttInterj,  -- Interj -> Utt
+   ProgrVP,    -- VP -> VP
+   ComplN2,    -- N2 -> NP -> CN
+
    
 --   IdRP,
    NumSg,
@@ -66,7 +70,10 @@ concrete HSKGrammarEng of HSKGrammar =
    here_Adv,
    there_Adv,
    where_IAdv,
-   in_Prep
+   in_Prep,
+   want_VV,
+   can8know_VV,
+   can_VV
    ],
 
  NumeralEng - [pot2, pot2plus, pot3, pot3plus],  -- just 1--99
@@ -88,7 +95,28 @@ concrete HSKGrammarEng of HSKGrammar =
    live_V,
    go_V,
    come_V,
-   now_Adv
+   now_Adv,
+   eat_V2,
+   drink_V2,
+  sit_V, 
+  dog_N,
+  cat_N,
+  do_V2,
+  water_N,
+  fruit_N,
+  apple_N,
+  name_N,
+  airplane_N,
+  watch_V2,
+  television_N,
+  rain_V,
+  school_N,
+  university_N,
+  student_N,
+  teacher_N,
+  listen_V2,
+  write_V2,
+  sleep_V
 
    ]
 
@@ -196,5 +224,57 @@ lin
 
   monthPN d = d ;
   dayPN d = d ;
+
+  tea_N = mkN "tea" ; 
+  chinese_N = mkN "Chinese" "Chinese" ;
+  prostitute_N = mkN "prostitute" ;
+  dish_N = mkN "dish" ;
+  vegetable_N = mkN "vegetable" ;
+  delicious_A = mkA "delicious" ;
+  want_V2 = mkV2 "want" ;
+  rice_N = mkN "rice" ;
+  cup_N = mkN "cup" ;
+  glass_N = mkN "glass" ;
+  invite_V2 = mkV2 "invite" ;
+  pay_V = I.pay_V ;
+  please_Interj = mkInterj "please" ;
+  chair_N = mkN "chair" ;
+  table_N = mkN "table" ;
+  gorgeous_A = mkA "gorgeous" ;
+  thanks_Interj = mkInterj "thanks" | mkInterj "thank you" ;
+  you_are_welcome_Interj = mkInterj "you are welcome" ;
+  meeting_N = mkN "meeting" ;
+  cook_V = mkV "cook" ;
+  have_name_Cl pron pn = mkCl (mkNP (SyntaxEng.mkQuant pron) (mkN "name")) (mkNP pn) ; 
+  have_age_Cl np nu = mkCl np (mkNP (mkDet <nu : Numeral>)) ;
+  how_old_QS np = mkQS (mkQCl (E.ICompAP (mkAP (mkA "old"))) <np : NP>) ;
+  mum_N2 = mkN2 "mum" ;
+  dad_N2 = mkN2 "dad" ;
+  son_N2 = mkN2 "son" ;
+  daughter_N2 = mkN2 "daughter" ;
+  family_N = mkN "family" ;
+  miss_V2 = mkV2 "miss" ;
+  think_VQ = mkVQ I.think_V ;
+  return_V = mkV "return" ;
+  see_V2 = mkV2 I.see_V ;
+  train_station_N = mkN "train station" ;
+  taxi_N = mkN "taxi" ;
+  see_you_tomorrow_Interj = mkInterj "see you tomorrow" ;
+  see_you_Interj = mkInterj "see you" ;
+  movie_N = mkN "movie" ;
+  computer_N = mkN "computer" ;
+  go_to_bed_V = partV I.go_V "to bed" ;
+  make_a_phone_call_V = partV I.make_V "a phone call" ;
+  feed_V2 = mkV2 I.feed_V ;
+  helloPhone_Interj = mkInterj "hello" ;
+  sorry_Interj = mkInterj "sorry" ;
+  know_V2 = mkV2 I.know_V ;
+  it_doesnt_matter_Interj = mkInterj "it doesn't matter" ;
+  study_V = mkV "study" ;
+  study_V2 = mkV2 "study" ;
+  chinese_NP = mkNP (mkPN "Chinese") ;
+  classmate_N = mkN "classmate" ;
+  chat_V = mkV "chat" ;
+  character_N = mkN "character" ;
 
   }
