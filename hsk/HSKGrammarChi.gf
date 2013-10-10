@@ -167,6 +167,10 @@ lin
   numeralNP num cn = mkNP <num : Numeral> <cn : CN> ;
 
   time_N = mkN "时候" ;
+  minute_N = mkN "分钟" [] ;
+  morning_N = mkN "上午" ; ---- classifier
+  noon_N = mkN "中午" ; ---- classifier
+  afternoon_N = mkN "下午" ; ---- classifier
   when_IAdv = lin IAdv {s = "么时候来"} ;
   yesterday_Adv = mkAdv "昨天" ;
   today_Adv = mkAdv "今天" ;

@@ -153,6 +153,10 @@ fun
   numeralNP : Numeral -> CN -> NP ;
 
   time_N : N ; -- 时候
+  minute_N : N ; -- 分钟 []
+  morning_N : N ; -- 上午
+  noon_N : N ; -- 中午
+  afternoon_N : N ; -- 下午
   when_IAdv : IAdv ; -- 么时候来
   yesterday_Adv : Adv ; -- 昨天
   today_Adv : Adv ; -- 今天

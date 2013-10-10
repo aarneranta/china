@@ -157,6 +157,10 @@ lin
   numeralNP num cn = mkNP <num : Numeral> <cn : CN> ;
 
   time_N = mkN "time" ;
+  minute_N = mkN "minute" ;
+  morning_N = mkN "morning" ; 
+  noon_N = mkN "noon" ; 
+  afternoon_N = mkN "afternoon" ; 
   when_IAdv = lin IAdv {s = "when"} ;
   yesterday_Adv = mkAdv "yesterday" ;
   today_Adv = mkAdv "today" ;
