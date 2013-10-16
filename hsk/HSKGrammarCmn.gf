@@ -1,4 +1,4 @@
---# -path=pinyin:chinese:api:.:alltenses
+--# -path=src/chinese/pinyin:src/chinese:src/api:.:alltenses
 
 concrete HSKGrammarCmn of HSKGrammar = 
 
