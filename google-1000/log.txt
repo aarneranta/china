@@ -1,0 +1,59 @@
+
+https://github.com/first20hours/google-10000-english/blob/master/google-10000-english.txt
+
+
+gf ~/GF/examples/translator/TranslateEng.pgf
+
+> rf -file=google-10000-english.txt | ma | wf -file=ma-10000.txt
+
+> rf -file=google-10000-english.txt | ma -missing | ? wc
+       0    1868   11800 _tmpi
+
+
+Try uppercase these:
+
+  ws <- readFile "missing-10000.txt" >>= return . words
+
+  writeFile "upper-missing.txt" $ unwords $ map (\w -> case w of c:cs -> (Data.Char.toUpper c : cs)) ws
+
+
+> rf -file=../upper-missing.txt | ma -missing | ? wc
+       0    1251    7358 _tmpi
+
+> rf -file=../upper-missing.txt | ma | wf -file=upper-ma.txt
+
+
+Extract the referenced abstract syntax words, only including those that appear as main word.
+
+  Prelude> ws1 <- readFile "ma-10000.txt"  >>= return . words
+  Prelude> ws2 <- readFile "upper-ma.txt"   >>= return . words
+  Prelude> length fws
+  14701
+
+Proper names - not so many:
+
+  Prelude> length $ filter ((=="NP") . take 2 . reverse) fws
+  629
+
+But quite few are compounds:
+
+  let cws = [w | w <- fws, length (filter (=='_') w) > 1]
+  Prelude> length cws
+  5010
+
+Take only those compounds where all parts belong to the word list:
+
+  Prelude> let ecws = [w | w <- fws, length (filter (=='_') w) > 1, let w2 = (words (map (\c -> if c == '_' then ' ' else c) w)), all (flip Data.Set.member sws) (init w2)]
+  Prelude> length ecws
+  4221
+
+All right - take all those words directly:
+
+  Prelude> let ews = [w | w <- fws, let w2 = (words (map (\c -> if c == '_' then ' ' else c) w)), all (flip Data.Set.member sws) (init w2)]
+  Prelude> length ews
+  13912
+
+Save them in a file
+
+  Prelude> writeFile "dict-google-10000.txt" $ unlines ews
+
