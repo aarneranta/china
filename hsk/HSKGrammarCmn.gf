@@ -19,7 +19,6 @@ concrete HSKGrammarCmn of HSKGrammar =
    AdAP,       -- AdA -> AP -> AP
    DetCN,      -- Det -> CN -> NP
    DetNP,      -- Det -> NP
-   MassNP,     -- CN -> NP 
    UseN,       -- N -> CN
    UseCl,      -- Cl -> S            -- with bu/mei
    QuestCl,    -- Cl -> QS           -- with ma
@@ -39,11 +38,8 @@ concrete HSKGrammarCmn of HSKGrammar =
    UttS,       -- S -> Utt
    IdetQuant,  -- IQuant -> Num -> IDet
    IdetCN,     -- IDet -> CN -> IP
-   AdvNP,      -- NP -> Adv -> NP
    QuestIAdv,  -- IAdv -> Cl -> QCl
    UseV,       -- V -> VP
-   UsePN,      -- PN -> NP
-   PrepNP,     -- Prep -> NP -> Adv
    AdjCN,      -- AP -> CN -> CN 
    UttInterj,  -- Interj -> Utt
    ProgrVP,    -- VP -> VP
@@ -68,8 +64,6 @@ concrete HSKGrammarCmn of HSKGrammar =
    few_Det,
    how8much_IP,
    who_IP,
-   here_Adv,
-   there_Adv,
    where_IAdv,
 --   in_Prep,
    want_VV,
@@ -96,14 +90,12 @@ concrete HSKGrammarCmn of HSKGrammar =
 --   live_V,
    go_V,
    come_V,
-   now_Adv,
    eat_V2,
    drink_V2,
   sit_V, 
   dog_N,
   cat_N,
   do_V2,
-  water_N,
   fruit_N,
   apple_N,
   name_N,
@@ -121,7 +113,7 @@ concrete HSKGrammarCmn of HSKGrammar =
 
    ]
 
-     ** open SyntaxChi, ParadigmsChi, (E = ExtraChi), (R = ResChi), (G = GrammarChi) 
+     ** open SyntaxChi, ParadigmsChi, (E = ExtraChi), (R = ResChi), (G = GrammarChi), (L = LexiconChi)
        in {
 
 flags coding = utf8 ;
@@ -129,10 +121,20 @@ flags coding = utf8 ;
 lincat
   Day = PN ;
   Month = PN ;
+  Place = NP ;
+  PlacePrep = Prep ;
+  PlaceAdv = Adv ;
+  TimeAdv = Adv ;
+  PersonName = PN ;
+  Person = NP ;
+  MassN = CN ;
 
 lin
-  PredDetNP det np = mkCl (lin NP {s = det.s}) (lin NP np) ;
-  PredAP np ap = E.PredBareAP np ap ;
+  massNP mn = mkNP mn ;
+  massCN mn = mn ;
+  water_N = mkCN L.water_N ;
+  predDetNP det np = mkCl (lin NP {s = det.s}) (lin NP np) ;
+  predAP np ap = E.PredBareAP np ap ;
   leS cl = lin S {s = (mkS cl).s ++ "le"} ;
   neQS cl = lin QS {s = (mkS cl).s ++ "ne"} ;
   buQS cl = mkQS (E.QuestRepV cl) ;
@@ -158,17 +160,27 @@ lin
   clothes_N = mkN "yi1fu2" ; ----
 
   the_weather_NP = mkpNP "tian1qi4" ;
-
   here_in_Adv = mkAdv "zhe4er2" ;
   there_in_Adv = mkAdv "na3er2" ;
+
+  here_Adv = G.here_Adv ;
+  there_Adv = G.there_Adv ;
+  now_Adv = L.now_Adv ;
+  advPlace prep place = SyntaxChi.mkAdv prep place ;
+  inMonth m = SyntaxChi.mkAdv (mkPrep [] [] timeAdvType) m  ;
+  onDay d = SyntaxChi.mkAdv (mkPrep [] [] timeAdvType) d ;
+  placeNPAdv prep np = SyntaxChi.mkAdv prep np ;
+  placeAdv a = a ;
+  timeAdv a = a ;
+  compPlaceAdv a = mkComp a ;
 
   warm_A = mkA "re4" ;
   cold_A = mkA "leng3" ;
   live_V = mkV "zhu4" ; -- reside
   in_Prep = mkPrep "zai4" ; -- in a city
 
-  beijing_PN = mkPN "bei3jing1" ; 
-  china_PN = mkPN "zhong1guo2" ;
+  beijing_Place = mkPN "bei3jing1" ; 
+  china_Place = mkPN "zhong1guo2" ;
 
 --- get 我在中国住, expected 我住在中国
 
@@ -186,15 +198,17 @@ lin
   in_front_of = mkPrep "zai4" "deqian2mian4" ;
   behind_Prep = mkPrep "zai4" "dehou4mian4" ;
   ExistInCl adv cn = E.TopicAdvCl adv (mkCl (lin CN cn)) ;
-  MisterPN pn = {s = pn.s ++ R.word "xian1sheng1"} ;
-  qian_PN = mkPN "qian2" ;
+  MisterPN pn = lin NP {s = pn.s ++ R.word "xian1sheng1"} ;
+  qian_PersonName = mkPN "qian2" ;
+  namePerson n = mkNP n ;
+  personNP p = p ;
   hello_Interj = mkInterj "ni3hao3" ;
   uttPhr utt = mkPhr <utt : Utt> ;
 
   impV v = mkImp v ;
   impV2 v np = mkImp v np ;
-  phrVocImp imp pn = mkPhr (mkUtt <imp : Imp>) (mkVoc (mkNP (lin PN pn))) ;
-  phrVocInterj int pn = mkPhr (G.UttInterj (lin Interj int)) (mkVoc (mkNP (lin PN pn))) ;
+  phrVocImp imp p = mkPhr (mkUtt <imp : Imp>) (mkVoc p) ;
+  phrVocInterj int p = mkPhr (G.UttInterj (lin Interj int)) (mkVoc p) ;
   uttImp imp = mkUtt <imp : Imp> ;
 
   numeralNP num cn = mkNP <num : Numeral> <cn : CN> ;
@@ -204,7 +218,7 @@ lin
   morning_N = mkN "shang4wu3" ; ---- classifier
   noon_N = mkN "zhong1wu3" ; ---- classifier
   afternoon_N = mkN "xia4wu3" ; ---- classifier
-  when_IAdv = lin IAdv {s = "mashi2hou4lai2"} ;
+  when_IAdv = lin IAdv {s = R.word "mashi2hou4lai2"} ;
   yesterday_Adv = mkAdv "zuo2tian1" ;
   today_Adv = mkAdv "jin1tian1" ;
   tomorrow_Adv = mkAdv "ming2tian1" ;
@@ -240,14 +254,14 @@ lin
   monthPN d = d ;
   dayPN d = d ;
 
-  tea_N = mkN "cha2" "bei1zi3" ; 
+  tea_N = mkCN (mkN "cha2" "bei1zi3") ; 
   chinese_N = mkN "zhong1guo2ren2" ;
   prostitute_N = mkN "xiao3jie3" ;
   dish_N = mkN "cai4" ;
   vegetable_N = mkN "cai4" ;
   delicious_A = mkA "hao3chi1" ;
   want_V2 = mkV2 "yao1" ;
-  rice_N = mkN "mi3fan4" ;
+  rice_N = mkCN (mkN "mi3fan4") ;
   cup_N = mkN "bei1zi3" [] ;
   glass_N = mkN "bei1zi3" [] ;
   invite_V2 = mkV2 "qing3" ;

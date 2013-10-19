@@ -16,7 +16,6 @@ concrete HSKGrammarEng of HSKGrammar =
    PositA,     -- A -> AP
    AdAP,       -- AdA -> A -> AP
    DetCN,      -- Det -> CN -> NP
-   MassNP,     -- CN -> NP 
    DetNP,      -- Det -> NP 
    UseN,       -- N -> CN
    UseCl,      -- Cl -> S            -- with bu/mei
@@ -37,11 +36,8 @@ concrete HSKGrammarEng of HSKGrammar =
    UttS,       -- S -> Utt
    IdetQuant,  -- IQuant -> Num -> IDet
    IdetCN,     -- IDet -> CN -> IP
-   AdvNP,      -- NP -> Adv -> NP
    QuestIAdv,  -- IAdv -> Cl -> QCl
    UseV,       -- V -> VP
-   UsePN,      -- PN -> NP
-   PrepNP,     -- Prep -> NP -> Adv
    AdjCN,      -- AP -> CN -> CN 
    UttInterj,  -- Interj -> Utt
    ProgrVP,    -- VP -> VP
@@ -67,10 +63,7 @@ concrete HSKGrammarEng of HSKGrammar =
    few_Det,
    how8much_IP,
    who_IP,
-   here_Adv,
-   there_Adv,
    where_IAdv,
-   in_Prep,
    want_VV,
    can8know_VV,
    can_VV
@@ -95,14 +88,12 @@ concrete HSKGrammarEng of HSKGrammar =
    live_V,
    go_V,
    come_V,
-   now_Adv,
    eat_V2,
    drink_V2,
   sit_V, 
   dog_N,
   cat_N,
   do_V2,
-  water_N,
   fruit_N,
   apple_N,
   name_N,
@@ -121,16 +112,27 @@ concrete HSKGrammarEng of HSKGrammar =
    ]
 
      ** open SyntaxEng, ParadigmsEng, 
-           (M = MorphoEng), (I = IrregEng), (G = GrammarEng), (E = ExtraEng) 
+           (M = MorphoEng), (I = IrregEng), (G = GrammarEng), (E = ExtraEng), (L = LexiconEng)
 in {
 
 lincat
   Day = PN ;
   Month = PN ;
+  Place = NP ;
+  PlacePrep = Prep ;
+  PlaceAdv = Adv ;
+  TimeAdv = Adv ;
+  PersonName = PN ;
+  Person = NP ;
+  MassN = CN ;
 
 lin
-  PredDetNP det np = mkCl (mkNP det) np ;
-  PredAP np ap = mkCl np ap ;
+  massNP mn = mkNP mn ;
+  massCN mn = mn ;
+  water_N = mkCN L.water_N ;
+
+  predDetNP det np = mkCl (mkNP (lin Det det)) (lin NP np) ;
+  predAP np ap = mkCl (lin NP np) (lin AP ap) ;
   leS cl = mkS anteriorAnt cl ;
   neQS cl = mkQS (mkQCl cl) ;
   buQS cl = mkQS (mkQCl cl ) ;
@@ -160,8 +162,22 @@ lin
   the_weather_NP = mkNP the_Det (mkN "weather") ;
   here_in_Adv = here_Adv ;
   there_in_Adv = there_Adv ;
-  beijing_PN = mkPN "Beijing" ;
-  china_PN = mkPN "China" ;
+
+  in_Prep = G.in_Prep ;
+  here_Adv = G.here_Adv ;
+  there_Adv = G.there_Adv ;
+  now_Adv = L.now_Adv ;
+  advPlace prep place = SyntaxEng.mkAdv prep place ;
+  inMonth m = SyntaxEng.mkAdv in_Prep (mkNP m) ;
+  onDay d = SyntaxEng.mkAdv on_Prep (mkNP d) ;
+  placeNPAdv prep np = SyntaxEng.mkAdv prep np ;
+  placeAdv a = a ;
+  timeAdv a = a ;
+  compPlaceAdv a = mkComp a ;
+----  placeAdvNP np a = mkNP np a ;
+
+  beijing_Place = mkNP (mkPN "Beijing") ;
+  china_Place = mkNP (mkPN "China") ;
   go_V2 = mkV2 I.go_V "to" ;
   up_Adv = ParadigmsEng.mkAdv "up" ;
   down_Adv = ParadigmsEng.mkAdv "down" ;
@@ -176,15 +192,17 @@ lin
   in_front_of = SyntaxEng.in8front_Prep ;
   behind_Prep = SyntaxEng.behind_Prep ;
   ExistInCl adv cn = mkCl <G.AdvCN cn adv : CN> ;
-  MisterPN pn = mkNP (mkCN (mkN "Mr.") (mkNP pn)) ;
-  qian_PN = mkPN "Qian" ;
+  MisterPN pn = mkNP (mkCN (mkN "Mr.") (mkNP (lin PN pn))) ;
+  qian_PersonName = mkPN "Qian" ;
+  namePerson n = mkNP n ;
+  personNP p = p ;
   hello_Interj = mkInterj "hello" ;
   uttPhr utt = mkPhr <utt : Utt> ;
 
   impV v = mkImp v ;
   impV2 v np = mkImp v np ;
-  phrVocImp imp pn = mkPhr (mkUtt <imp : Imp>) (mkVoc (mkNP pn)) ;
-  phrVocInterj int pn = mkPhr (G.UttInterj (lin Interj int)) (mkVoc (mkNP pn)) ;
+  phrVocImp imp p = mkPhr (mkUtt <imp : Imp>) (mkVoc p) ;
+  phrVocInterj int p = mkPhr (G.UttInterj (lin Interj int)) (mkVoc p) ;
   uttImp imp = mkUtt <imp : Imp> ;
 
   numeralNP num cn = mkNP <num : Numeral> <cn : CN> ;
@@ -227,17 +245,14 @@ lin
   saturday_Day = mkPN "Saturday" ;
   sunday_Day = mkPN "Sunday" ;
 
-  monthPN d = d ;
-  dayPN d = d ;
-
-  tea_N = mkN "tea" ; 
+  tea_N = mkCN (mkN "tea") ; 
   chinese_N = mkN "Chinese" "Chinese" ;
   prostitute_N = mkN "prostitute" ;
   dish_N = mkN "dish" ;
   vegetable_N = mkN "vegetable" ;
   delicious_A = mkA "delicious" ;
   want_V2 = mkV2 "want" ;
-  rice_N = mkN "rice" ;
+  rice_N = mkCN (mkN "rice") ;
   cup_N = mkN "cup" ;
   glass_N = mkN "glass" ;
   invite_V2 = mkV2 "invite" ;

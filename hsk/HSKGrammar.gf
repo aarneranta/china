@@ -4,7 +4,7 @@ abstract HSKGrammar =
 
    Phr, Utt, NP, VP, Cl, Adv, V2, AP, A, AdA, Det, S, QS, QCl, IP, IDet, IQuant, N2,
    ClSlash, VPSlash, Pron, Pol, Temp, Tense, Ant, RS, RCl, RP, CN, Comp, VV, N, V, PN,
-   Predet, Prep, Quant, IQuant, Num, Interj, Numeral, VQ, IComp, Imp,
+   Predet, Quant, IQuant, Num, Interj, Numeral, VQ, IComp, Imp,
    IAdv, TTAnt, AAnter, ASimul, TPres, PPos, PNeg,
 
    PredVP,     -- NP -> VP -> Cl
@@ -17,7 +17,6 @@ abstract HSKGrammar =
    AdAP,       -- AdA -> A -> AP
    DetCN,      -- Det -> CN -> NP
    DetNP,      -- Det -> NP 
-   MassNP,     -- CN -> NP 
    UseN,       -- N -> CN
    UseCl,      -- Cl -> S            -- with bu/mei
    QuestCl,    -- Cl -> QCl          -- with ma
@@ -37,11 +36,8 @@ abstract HSKGrammar =
    UttS,       -- S -> Utt
    IdetQuant,  -- IQuant -> Num -> IDet
    IdetCN,     -- IDet -> CN -> IP
-   AdvNP,      -- NP -> Adv -> NP
    QuestIAdv,  -- IAdv -> Cl -> QCl
    UseV,       -- V -> VP
-   UsePN,      -- PN -> NP
-   PrepNP,     -- Prep -> NP -> Adv
    AdjCN,      -- AP -> CN -> CN 
    UttInterj,  -- Interj -> Utt
    ProgrVP,    -- VP -> VP
@@ -66,10 +62,7 @@ abstract HSKGrammar =
    few_Det,
    how8much_IP,
    who_IP,
-   here_Adv,
-   there_Adv,
    where_IAdv,
-   in_Prep,
    want_VV,
    can8know_VV,
    can_VV
@@ -94,14 +87,12 @@ abstract HSKGrammar =
    live_V, -- reside
    go_V,
    come_V,
-   now_Adv,
    eat_V2,
    drink_V2,
   sit_V, 
   dog_N,
   cat_N,
   do_V2,
-  water_N,
   fruit_N,
   apple_N,
   name_N,
@@ -126,10 +117,21 @@ flags startcat = Phr ;
 cat
   Month ;
   Day ;
+  Place ;
+  PlacePrep ;
+  PlaceAdv ;
+  TimeAdv ;
+  PersonName ;
+  Person ;
+  MassN ;
 
 fun
-  PredDetNP : Det -> NP -> Cl ;    -- this is me (zhe shi wo)
-  PredAP : NP -> AP -> Cl ;        -- you (are) good
+  massNP : MassN -> NP ;
+  massCN : MassN -> CN ;
+  water_N : MassN ;
+
+  predDetNP : Det -> NP -> Cl ;    -- this is me (zhe shi wo)
+  predAP : NP -> AP -> Cl ;        -- you (are) good
   leS  : Cl -> S ;             -- with le
   neQS : Cl -> QS ;            -- with ne
   buQS : Cl -> QS ;            -- with bu/mei V n V
@@ -155,11 +157,24 @@ fun
   clothes_N : N ;
 
   the_weather_NP : NP ;
-  here_in_Adv : Adv ;
-  there_in_Adv : Adv ;
+  here_in_Adv : PlaceAdv ;
+  there_in_Adv : PlaceAdv ;
 
-  beijing_PN : PN ;
-  china_PN : PN ;
+  in_Prep : PlacePrep ;
+  here_Adv : PlaceAdv ;
+  there_Adv : PlaceAdv ;
+  now_Adv : TimeAdv ;
+  advPlace : PlacePrep -> Place -> PlaceAdv ;
+  inMonth : Month -> TimeAdv ;
+  onDay : Day -> TimeAdv ;
+  placeNPAdv : PlacePrep -> NP -> PlaceAdv ; --- overgen
+  placeAdv : PlaceAdv -> Adv ;
+  timeAdv : TimeAdv -> Adv ;
+  compPlaceAdv : PlaceAdv -> Comp ;
+----  placeAdvNP : NP -> PlaceAdv -> NP ;  --- overgen
+
+  beijing_Place : Place ;
+  china_Place : Place ;
   go_V2 : V2 ;
   up_Adv : Adv ;
   down_Adv : Adv ;
@@ -170,20 +185,22 @@ fun
   hospital_N : N ;
   restaurant_N : N ;
   shop_N : N ;
-  at_Prep : Prep ;
-  in_front_of : Prep ;
-  behind_Prep : Prep ;
-  ExistInCl : Adv -> CN -> Cl ;  -- there is a shop behind the hospital
-  MisterPN : PN -> NP ;
-  qian_PN : PN ;
+  at_Prep : PlacePrep ;
+  in_front_of : PlacePrep ;
+  behind_Prep : PlacePrep ;
+  ExistInCl : PlaceAdv -> CN -> Cl ;  -- there is a shop behind the hospital
+  MisterPN : PersonName -> Person ;
+  qian_PersonName : PersonName ;
+  namePerson : PersonName -> Person ;
+  personNP : Person -> NP ;
   hello_Interj : Interj ;
   uttPhr : Utt -> Phr ;
 
   impV : V -> Imp ;
   impV2 : V2 -> NP -> Imp ;
   uttImp : Imp -> Utt ;
-  phrVocImp : Imp -> PN -> Phr ;
-  phrVocInterj : Interj -> PN -> Phr ;
+  phrVocImp : Imp -> Person -> Phr ;
+  phrVocInterj : Interj -> Person -> Phr ;
 
   numeralNP : Numeral -> CN -> NP ;
 
@@ -193,9 +210,9 @@ fun
   noon_N : N ; -- 中午
   afternoon_N : N ; -- 下午
   when_IAdv : IAdv ; -- 么时候来
-  yesterday_Adv : Adv ; -- 昨天
-  today_Adv : Adv ; -- 今天
-  tomorrow_Adv : Adv ; -- 明天
+  yesterday_Adv : TimeAdv ; -- 昨天
+  today_Adv : TimeAdv ; -- 今天
+  tomorrow_Adv : TimeAdv ; -- 明天
 
   january_Month : Month ; -- 一月
   february_Month : Month ;  -- 二月
@@ -225,17 +242,14 @@ fun
   saturday_Day : Day ; -- 星期六
   sunday_Day : Day ; -- 星期日 | 星期天
 
-  monthPN : Month -> PN ;
-  dayPN : Day -> PN ;
-
-  tea_N : N ; -- 茶 -- 杯子 
+  tea_N : MassN ; -- 茶 -- 杯子 
   chinese_N : N ; -- 中国人
   prostitute_N : N ; -- 小姐
   dish_N : N ; -- 菜 
   vegetable_N : N ; -- 菜
   delicious_A : A ; -- 好吃
   want_V2 : V2 ; -- 要 (yào)
-  rice_N : N ; -- 米饭 (mǐ fàn) 
+  rice_N : MassN ; -- 米饭 (mǐ fàn) 
   cup_N : N ; -- 杯子 []
   glass_N : N ; -- 杯子 []
   invite_V2 : V2 ; -- 请
@@ -248,7 +262,7 @@ fun
   you_are_welcome_Interj : Interj ; -- 不客气
   meeting_N : N ; -- 会
   cook_V : V ; -- 做饭
-  have_name_Cl : Pron -> PN -> Cl ; -- 叫
+  have_name_Cl : Pron -> PersonName -> Cl ; -- 叫
   have_age_Cl : NP -> Numeral -> Cl ; -- 我24岁
   how_old_QS : NP -> QS ; -- 你几岁 | 你多大?
   mum_N2 : N2 ; -- 妈妈 []
