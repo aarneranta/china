@@ -169,7 +169,7 @@ lin
   onDay d = SyntaxChi.mkAdv (mkPrep [] [] timeAdvType) d ;
   placeNPAdv prep np = SyntaxChi.mkAdv prep np ;
   placeAdv a = a ;
-  timeAdv a = a ;
+  timeAdv a = lin Adv {s = a.s ; advType = timeAdvType} ;
   compPlaceAdv a = mkComp a ;
 
   warm_A = mkA "热" ;
