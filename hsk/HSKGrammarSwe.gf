@@ -269,7 +269,7 @@ lin
   cook_V = mkV (mkV "laga") "mat" ;
   have_name_Cl pron pn = mkCl (mkNP pron) (mkV2 (mkV "heta" "hette" "hetat")) (mkNP pn) ; 
   have_age_Cl np nu = mkCl np (mkNP (mkDet <nu : Numeral>)) ;
-  how_old_QS np = mkQS (mkQCl (E.ICompAP (mkAP (mkA "gammal"))) <np : NP>) ;
+  how_old_QS np = mkQS (mkQCl (E.ICompAP (mkAP L.old_A)) <np : NP>) ;
   mum_N2 = mkN2 (mkN "mamma") to_Prep ;
   dad_N2 = mkN2 (mkN "pappa") to_Prep ;
   son_N2 = mkN2 (mkN "son" "söner") to_Prep ;
