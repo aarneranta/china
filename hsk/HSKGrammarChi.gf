@@ -4,7 +4,7 @@ concrete HSKGrammarChi of HSKGrammar =
 
    Phr, Utt, NP, VP, Cl, Adv, V2, AP, A, AdA, Det, S, QS, QCl, IP, IDet, IQuant,N2,
    ClSlash, VPSlash, Pron, Pol, Temp, Tense, Ant, RS, RCl, RP, CN, Comp, VV, N, PN,
-   Predet, Prep, Quant, IQuant, Num, Interj, Numeral, VQ, IComp,
+   Predet, Prep, Quant, IQuant, Num, Interj, Numeral, VQ, IComp, Imp,
    IAdv, TTAnt, AAnter, ASimul, TPres, PPos, PNeg,
 
    PredVP,     -- NP -> VP -> Cl
@@ -187,8 +187,13 @@ lin
   MisterPN pn = {s = pn.s ++ R.word "先生"} ;
   qian_PN = mkPN "钱" ;
   hello_Interj = mkInterj "你好" ;
-  uttVocPhr utt np = mkPhr <utt : Utt> (mkVoc np) ;
   uttPhr utt = mkPhr <utt : Utt> ;
+
+  impV v = mkImp v ;
+  impV2 v np = mkImp v np ;
+  phrVocImp imp pn = mkPhr (mkUtt <imp : Imp>) (mkVoc (mkNP (lin PN pn))) ;
+  phrVocInterj int pn = mkPhr (G.UttInterj (lin Interj int)) (mkVoc (mkNP (lin PN pn))) ;
+  uttImp imp = mkUtt <imp : Imp> ;
 
   numeralNP num cn = mkNP <num : Numeral> <cn : CN> ;
 
@@ -197,7 +202,7 @@ lin
   morning_N = mkN "上午" ; ---- classifier
   noon_N = mkN "中午" ; ---- classifier
   afternoon_N = mkN "下午" ; ---- classifier
-  when_IAdv = lin IAdv {s = "么时候来"} ;
+  when_IAdv = lin IAdv {s = R.word "么时候来"} ;
   yesterday_Adv = mkAdv "昨天" ;
   today_Adv = mkAdv "今天" ;
   tomorrow_Adv = mkAdv "明天" ;

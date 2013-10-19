@@ -6,7 +6,7 @@ concrete HSKGrammarCmn of HSKGrammar =
 
    Phr, Utt, NP, VP, Cl, Adv, V2, AP, A, AdA, Det, S, QS, QCl, IP, IDet, IQuant,N2,
    ClSlash, VPSlash, Pron, Pol, Temp, Tense, Ant, RS, RCl, RP, CN, Comp, VV, N, PN,
-   Predet, Prep, Quant, IQuant, Num, Interj, Numeral, VQ, IComp,
+   Predet, Prep, Quant, IQuant, Num, Interj, Numeral, VQ, IComp, Imp,
    IAdv, TTAnt, AAnter, ASimul, TPres, PPos, PNeg,
 
    PredVP,     -- NP -> VP -> Cl
@@ -189,8 +189,13 @@ lin
   MisterPN pn = {s = pn.s ++ R.word "xian1sheng1"} ;
   qian_PN = mkPN "qian2" ;
   hello_Interj = mkInterj "ni3hao3" ;
-  uttVocPhr utt np = mkPhr <utt : Utt> (mkVoc np) ;
   uttPhr utt = mkPhr <utt : Utt> ;
+
+  impV v = mkImp v ;
+  impV2 v np = mkImp v np ;
+  phrVocImp imp pn = mkPhr (mkUtt <imp : Imp>) (mkVoc (mkNP (lin PN pn))) ;
+  phrVocInterj int pn = mkPhr (G.UttInterj (lin Interj int)) (mkVoc (mkNP (lin PN pn))) ;
+  uttImp imp = mkUtt <imp : Imp> ;
 
   numeralNP num cn = mkNP <num : Numeral> <cn : CN> ;
 

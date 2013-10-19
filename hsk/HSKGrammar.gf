@@ -4,7 +4,7 @@ abstract HSKGrammar =
 
    Phr, Utt, NP, VP, Cl, Adv, V2, AP, A, AdA, Det, S, QS, QCl, IP, IDet, IQuant, N2,
    ClSlash, VPSlash, Pron, Pol, Temp, Tense, Ant, RS, RCl, RP, CN, Comp, VV, N, V, PN,
-   Predet, Prep, Quant, IQuant, Num, Interj, Numeral, VQ, IComp,
+   Predet, Prep, Quant, IQuant, Num, Interj, Numeral, VQ, IComp, Imp,
    IAdv, TTAnt, AAnter, ASimul, TPres, PPos, PNeg,
 
    PredVP,     -- NP -> VP -> Cl
@@ -46,7 +46,6 @@ abstract HSKGrammar =
    UttInterj,  -- Interj -> Utt
    ProgrVP,    -- VP -> VP
    ComplN2,    -- N2 -> NP -> CN
-
 
    IdRP,
    NumSg,
@@ -178,8 +177,13 @@ fun
   MisterPN : PN -> NP ;
   qian_PN : PN ;
   hello_Interj : Interj ;
-  uttVocPhr : Utt -> NP -> Phr ;
   uttPhr : Utt -> Phr ;
+
+  impV : V -> Imp ;
+  impV2 : V2 -> NP -> Imp ;
+  uttImp : Imp -> Utt ;
+  phrVocImp : Imp -> PN -> Phr ;
+  phrVocInterj : Interj -> PN -> Phr ;
 
   numeralNP : Numeral -> CN -> NP ;
 

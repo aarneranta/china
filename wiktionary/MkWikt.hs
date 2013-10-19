@@ -106,6 +106,19 @@ convertLine (eng,cat,fps) = eng ++ " = " ++ unwords (intersperse "|" (map lin fp
 -- find all senses
 --------------------
 
-getSense line = if (notElem "::" (words line) || take 1 line =="#") then [] else [takeWhile (/= ':') line]
+getSense line = if (notElem "::" (words line) || take 1 line =="#") then [] else [unphon line]
 
+unphon = unph . getKey
+  where
+    unph l = case break (=='/') l of 
+      (l1,l2@(_:cs)) -> l1 ++ case dropWhile (/='/') cs of
+        _:' ':s -> s
+        _:s -> s
+        s -> s
+      _ -> l
+
+    getKey s = case s of
+      ':':':':_ -> []
+      c:cs -> c : getKey cs
+      _ -> s
 
