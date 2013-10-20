@@ -1,0 +1,52 @@
+entrypoints Treebank, GTree ;
+
+GB.    Treebank ::= [AnnotGTree] ;
+
+AG.    AnnotGTree ::= GAnnot GTree ;
+
+terminator AnnotGTree "" ;
+
+GAPlus.  GAnnot ::= "+" ;
+GAStar.  GAnnot ::= "*" ;
+GAHash.  GAnnot ::= "#" ;
+
+GTApp.  GTree  ::= GAtom [GTree1] ;
+GTAtom. GTree1 ::= GAtom ;
+
+coercions GTree 1 ;
+
+terminator nonempty GTree1 "" ;
+
+GFun.  GAtom ::= Ident ;
+GMeta. GAtom ::= "?" ;
+GStr.  GAtom ::= String ;
+
+
+
+{-
+_.     PTree  ::= "(" PTree ")" ;
+PApp.  PTree  ::= "(" PCat [PTree] ")" ;
+PPer.  PTree  ::= "(" "." "." ")" ;
+PCom.  PTree  ::= "(" "," "," ")" ;
+PWord. PTree  ::= PWord ;
+PNone. PTree  ::= "(" "-NONE-" PStar PIndex ")" ;
+
+
+terminator TreePair "" ;
+
+TP.    TreePair ::= GAnnot GTree PTree ;
+
+terminator nonempty PTree "" ;
+
+PSStar.  PStar  ::= "*" ;
+PSTStar. PStar  ::= "*T*" ;
+PINone.  PIndex ::= ;
+PIInt.   PIndex ::= "-" Integer ;
+
+PCId.  PCat ::= [Ident] ;
+
+separator nonempty Ident "-" ;
+
+PWId.  PWord ::= Ident ;
+
+-}
