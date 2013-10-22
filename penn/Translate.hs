@@ -58,7 +58,7 @@ runC :: FilePath -> String -> FilePath -> IO ()
 runC pgf source input = do
   s <- readFile input
   writeFile tmpLex $ unlines $ map lexText $ sentences s 
-  let cmd = unwords ["pgf-translate",pgf,"Phr",source,source,"ParseEngAbs3.probs", "<", tmpLex, ">", tmpOutput]
+  let cmd = unwords ["pgf-translate",pgf,"Phrase",source,source,"ParseEngAbs3.probs", "<", tmpLex, ">", tmpOutput]
   system cmd
   putStrLn cmd
   return ()

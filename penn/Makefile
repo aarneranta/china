@@ -21,6 +21,8 @@ molto-hin:
 	./Translate -trees -s ParseHin.pgf <molto.trees >molto-hin.txt
 
 
+wsj-chi:
+	runghc ./Translate -trees -s TranslateEngChi.pgf <wsj-random.trees >new-wsj-eng-chi.txt
 wsj-eng:
 	./Translate -trees -s ParseEng.pgf <wsj-random.trees >wsj-eng.txt
 wsj-fin:
