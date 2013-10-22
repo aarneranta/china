@@ -1,5 +1,6 @@
 import Data.List
 import Data.Char
+import Control.Monad
 import qualified Data.Map as M
 
 
@@ -134,15 +135,39 @@ allLanguages = M.keys . opens
 lookIf :: Ord k => M.Map k [v] -> k -> [v]
 lookIf m k = maybe [] id $ M.lookup k m
 
+intersectDict :: Dictionary -> Dictionary
+intersectDict d = intersectDictLang (allLanguages d) d
+
+intersectDictLang :: [Lang] -> Dictionary -> Dictionary
+intersectDictLang langs dict = dict {
+  entries = M.fromList [(f,e) | (f,e) <- M.assocs (entries dict), isCompleteEntryLang langs e]
+  }
+
+isCompleteEntryLang :: [Lang] -> Entry -> Bool
+isCompleteEntryLang langs e = all (\l -> M.member l (rules e)) langs 
+
+lookupRules :: Fun -> Lang -> Dictionary -> [Rule]
+lookupRules f l d = maybe [] (maybe [] id . M.lookup l . rules) $ M.lookup f (entries d)
+
 
 -------------------
 -- printing Dict
 -------------------
 
-prDictDict = prDict "Dict"
+prDictDict = prDictFiles "Dict"
 
-prDict :: Module -> Dictionary -> IO ()
-prDict name d = do
+-- print tab-separated (.tsv) table
+prDictTab :: Dictionary -> String
+prDictTab d = unlines $ map prTab $ ("abstract":langs) : [f : prPad (rules e) | (f,e) <- M.assocs (entries d)] where
+  prTab = concat . intersperse "\t"
+  prPad rmap = [pr (M.lookup lang rmap) | lang <- langs]
+  langs = allLanguages d
+  pr mrule = case mrule of
+    Just (rule:_) -> lemma rule
+    _ -> "-"
+
+prDictFiles :: Module -> Dictionary -> IO ()
+prDictFiles name d = do
   writeFile (gfFile name) (prAbstract name d)
   mapM_ (\lang -> writeFile (gfFile (langModule name lang)) (prConcrete name lang d)) (allLanguages d)
 
@@ -163,7 +188,12 @@ prAbsRule :: Fun -> Cat -> Weight -> String
 prAbsRule f c w = unwords ["fun",f,":",c,";","--",show w]
 
 prCncRule :: Fun -> [Rule] -> String
-prCncRule f rs = unwords $ ["lin",f,"="] ++ (intersperse "|" (map lin rs)) ++ [";"]  ---- ignoring metadata
+prCncRule f rs = 
+  unwords $ ["lin",f,"="] ++ (intersperse "|" (map lin rs)) ++ [";","--"] ++ map (prMetadata . metar) rs 
+  ---- metadata should be by variants
+
+prMetadata :: Metadata -> String
+prMetadata ms = concat $ intersperse ", " [a ++ "=" ++ v | (a,v) <- ms]
 
 
 --------------------------
@@ -176,11 +206,13 @@ prCncRule f rs = unwords $ ["lin",f,"="] ++ (intersperse "|" (map lin rs)) ++ ["
 gfLine2lin :: String -> [(Fun,[Rule])]
 gfLine2lin = get . words where
   get ws = case ws of
-    "lin":ww   -> get ww                                                         -- drop leading lin
-    fun:"=":ww -> [(fun, map lin2rule (variants (unsemicolon (unwords ww))))]    -- drop ending semicolon
+    "lin":ww   -> get ww                                           -- drop leading lin
+    _  :"=":"variants":('{':'}':_):_ -> []
+    fun:"=":ww -> [(fun, map lin2rule (variants (unwords ww)))]    ---- metadata actually per rule, not per variant
     _ -> [] ---error ("cannot get lin rule from " ++ unwords ws)
 
 -- this reads a GF lexicon file, accepting lines with '=' and ';'
+---- TODO: should get opens and extends from the header, via parser
 gfFile2dictionaryUpdate :: Dictionary -> Lang -> String -> Dictionary
 gfFile2dictionaryUpdate dict lang s = 
   updateDictionary [(lang, concatMap gfLine2lin (filter isLinRule (lines s)))] dict
@@ -218,15 +250,19 @@ gfFile m = m ++ ".gf"
 mkLin :: Cat -> String -> String
 mkLin cat word = "mk" ++ cat ++ " \"" ++ word ++ "\""
 
--- heuristic: mkV "x" "y" "z"  gives lemma x
+-- heuristic: mkV "x" "y" "z"  gives lemma x ; comment is metadata
 lin2rule :: String -> Rule
 lin2rule s = RR {
-  lin = s,
-  lemma = case words s of 
-    ('m':'k':_):('"':w):_ -> init w
-    _ -> s,
-  metar = []
+  lin = r,
+  lemma = case filter ((=='"') . head) (words r) of 
+    w@(_:_:_):_ -> init (tail w)   --- the first quoted string is the lemma
+    _ -> r,                --- if not found, the whole entry is the lemma
+  metar = case dropWhile (flip elem " ;-") c of
+            "" -> []
+            co -> [("comment",co)]
   }
+ where
+  (r,c) = span (/= ';') s   ---- divide at the first ;
   
 -- module.gf -> module
 getModule :: FilePath -> Module
@@ -242,3 +278,22 @@ variants = lines . map (\c -> if c=='|' then '\n' else c)
 unsemicolon :: String -> String
 unsemicolon = filter (/=';')
 
+----------------------------
+---- to test
+----------------------------
+
+test = getDictFromGFFiles [
+  "/Users/aarne/GF/lib/src/english/DictEng.gf",
+  "/Users/aarne/GF/lib/src/bulgarian/DictEngBul.gf",
+  "/Users/aarne/GF/lib/src/chinese/DictEngChi.gf",
+  "/Users/aarne/GF/lib/src/german/DictEngGer.gf"
+  ]
+
+getDictFromGFFiles :: [FilePath] -> IO Dictionary
+getDictFromGFFiles = foldM updateDictFromGFFile initDictionary
+
+updateDictFromGFFile :: Dictionary -> FilePath -> IO Dictionary
+updateDictFromGFFile dict0 file = do
+  s <- readFile file
+  let lang = getLang $ getModule file
+  return $ gfFile2dictionaryUpdate dict0 lang s
