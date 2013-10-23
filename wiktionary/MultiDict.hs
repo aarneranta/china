@@ -177,17 +177,17 @@ prDictTab d = map prTab $ ("Abstract":"Category":langHeader) : [f : cat e : prPa
 
 prDictFiles :: Module -> Dictionary -> IO ()
 prDictFiles name d = do
-  writeFile (gfFile name) (prAbstract name d)
-  mapM_ (\lang -> writeFile (gfFile (langModule name lang)) (prConcrete name lang d)) (allLanguages d)
+  writeFile (gfFile name) (unlines (prAbstract name d))
+  mapM_ (\lang -> writeFile (gfFile (langModule name lang)) (unlines (prConcrete name lang d))) (allLanguages d)
 
-prAbstract :: Module -> Dictionary -> String
-prAbstract name d = unlines $
+prAbstract :: Module -> Dictionary -> [String]
+prAbstract name d = 
   [unwords (["abstract",name,"="] ++ intersperse ", " (baseabs d) ++ ["**", "{"])] ++
   [prAbsRule f c w | (f,(c,w)) <- M.assocs (abstractDict d)] ++
   ["}"]
 
-prConcrete :: Module -> Lang -> Dictionary -> String 
-prConcrete name lang d = unlines $
+prConcrete :: Module -> Lang -> Dictionary -> [String] 
+prConcrete name lang d = 
   [unwords (["concrete",langModule name lang,"of", name, "="] ++ intersperse ", " (lookIf (basecncs d) lang))] ++
   [unwords (["**","open"] ++ intersperse ", " (lookIf (opens d) lang) ++ ["{"])] ++
   [prCncRule f rs | (f,rs) <- M.assocs (concreteLang lang d)] ++
@@ -205,9 +205,9 @@ prMetadata :: Metadata -> String
 prMetadata ms = concat $ intersperse ", " [a ++ "=" ++ v | (a,v) <- ms]
 
 
---------------------------
--- getting Dict by parsing
---------------------------
+-----------------------------------
+-- getting Dict by parsing GF files
+-----------------------------------
 
 ---- TODO: use the real GF source file parser
  
@@ -250,6 +250,12 @@ getSupercat = take 1
 langModule :: Module -> Lang -> Module
 langModule m l = m ++ l
 
+-- make sure a fun or cat is a valid GF ident --- TODO: this may produce clashes 
+mkIdent :: String -> String
+mkIdent = initial . map fc where
+  fc c = if isAlphaNum c then c else '_'
+  initial w@(c:_) = if isLetter c then w else "word__" ++ w
+  initial w = "word__" ++ w
 
 -- modulename.gf
 gfFile :: Module -> FilePath
@@ -284,8 +290,13 @@ getLang = reverse . take 3 . reverse
 variants :: String -> [String]
 variants = lines . map (\c -> if c=='|' then '\n' else c)
 
-unsemicolon :: String -> String
-unsemicolon = filter (/=';')
+chop :: Eq a => a -> [a] -> [[a]]
+chop c xs = case break (== c) xs of
+  (x1,_:x2@(_:_)) -> x1 : chop c x2
+  (x1,_)          -> [x1]
+
+normalizeSpaces :: String -> String
+normalizeSpaces = unwords . words
 
 ----------------------------
 ---- to test
@@ -310,3 +321,68 @@ updateDictFromGFFile dict0 file = do
   s <- readFile file
   let lang = getLang $ getModule file
   return $ gfFile2dictionaryUpdate dict0 lang s
+
+
+-- example from Wiktionary:
+-- *Main> w <- readFile "en-cmn-enwiktionary.txt" >>= return . lines
+-- *Main> let d = dictW "Chi" w initDictionary
+-- *Main> putStrLn $ unlines $ take 100 $ prConcrete "Wikt" "Chi" d
+
+
+-------------------------------------
+-- getting Dict by parsing Wiktionary
+-------------------------------------
+
+-- format:
+-- absorb {v}    (to occupy fully ) :: 全神貫注, 全神贯注 /quánshénguànzhù/
+-- fun    cat    disamb                lin variants     pronunciation
+
+dictW :: Lang -> [String] -> Dictionary -> Dictionary
+dictW lang ls dict = 
+  let ruls = linRulesW lang $ concatMap analyseLineW ls 
+  in  
+  updateDictionary [(lang,[(fun,rs) | (fun,_,rs,_) <- ruls])] dict
+
+analyseLineW :: String -> [(Fun, Cat, String, [String], Metadata)]
+analyseLineW l = do
+  let ws = filter (notElem '/') (words l)                    -- ignore pronunciation
+  if (notElem "::" ws || notElem '{' l) then fail l else do  -- ignore incomplete or ill-formatted line
+    let (ws1,c:ws2) = span ((/= '{') . head) ws              -- English lemma and cat
+    let fun = mkIdent (unwords ws1)
+    let cat = catW c
+    let (disamb,_:ws3) = span (/="::") ws2                   -- disambiguation part and linearizations
+    let lins = map normalizeSpaces (chop ',' (unwords ws3))  -- comma-separated lins
+    return (fun,cat,unwords disamb,lins,srcMetadata "Wiktionary")
+
+-- build the final fun names and lin rules
+linRulesW :: Lang -> [(Fun, Cat, String, [String], Metadata)] -> [(Fun,Cat,[Rule],Metadata)]
+linRulesW lang = map buildRule . concatMap disambFuns . groupBy sameFunCat . concatMap getCats
+  where
+   getCats r = [r]  ---- TODO: look up subcategories of verbs and expand verb entries accordingly
+   sameFunCat (f1,c1,_,_,_) (f2,c2,_,_,_) = f1==f2 && c1==c2
+   disambFuns rs = case rs of
+     [(f,c,d,ls,m)] -> [(f ++"_" ++ c, c, d, ls, m)]
+     _   -> [(disambiguateFun f c d i, c, d, ls, m) | ((f,c,d,ls,m),i) <- zip rs [1..]]
+   buildRule (f,c,d,ls,m) = (f,c, map (initRule c) ls, m ++ glossMetadata d)
+
+disambiguateFun :: Fun -> Cat -> String -> Int -> Fun
+disambiguateFun f c _ i = concat $ intersperse "_" [f,show i, c]
+
+srcMetadata :: String -> Metadata
+srcMetadata s = [("src",s)]
+
+glossMetadata :: String -> Metadata
+glossMetadata s = [("gloss",s)]
+
+catW :: String -> Cat
+catW s = case (init (tail s)) of
+  "adj"  -> "A"
+  "n"    -> "N"
+  "v"    -> "V"
+  "prop" -> "PN"
+  "adv"  -> "Adv"
+  "conj" -> "Conj"
+  "interj" -> "Interj"
+  "proverb" -> "Utt"
+  "determiner" -> "Det"
+  _ -> "Word"  -- the catch-all category
