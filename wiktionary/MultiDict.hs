@@ -95,8 +95,15 @@ initRule cat s = RR {
   metar = [("status","guess")]
   }
 
+
+changeRules :: Lang -> [(Fun,[Rule])] -> Dictionary -> Dictionary
+changeRules = updateRulesBy M.insert
+
 updateRules :: Lang -> [(Fun,[Rule])] -> Dictionary -> Dictionary
-updateRules lang funruls dict0 = 
+updateRules = updateRulesBy (M.insertWith union)
+
+updateRulesBy :: (Lang -> [Rule] -> M.Map Lang [Rule] -> M.Map Lang [Rule]) -> Lang -> [(Fun,[Rule])] -> Dictionary -> Dictionary
+updateRulesBy upd lang funruls dict0 = 
   let dict = case M.lookup lang (opens dict0) of    -- if the lang doesn't exist
         Just _ -> dict0
         _ -> initLang lang dict0                    -- add the lang
@@ -105,7 +112,7 @@ updateRules lang funruls dict0 =
         _ -> initEntry fun                          -- add the fun
       addOne (fun,ruls) d = d {
         entries = M.insert fun ((entry fun) {                   -- add the new rule
-          rules = M.insertWith union lang ruls (rules (entry fun))    -- possibly on top of other rules for the same fun and lang 
+          rules = upd lang ruls (rules (entry fun))    -- possibly on top of other rules for the same fun and lang 
           }) 
          (entries d)
          }
@@ -157,13 +164,15 @@ lookupRules f l d = maybe [] (maybe [] id . M.lookup l . rules) $ M.lookup f (en
 prDictDict = prDictFiles "Dict"
 
 -- print tab-separated (.tsv) table
-prDictTab :: Dictionary -> String
-prDictTab d = unlines $ map prTab $ ("abstract":langs) : [f : prPad (rules e) | (f,e) <- M.assocs (entries d)] where
+-- structure: Abstract, Category, Bul lemma, Bul rule, Eng lemma, Eng rule, ...
+prDictTab :: Dictionary -> [String]
+prDictTab d = map prTab $ ("Abstract":"Category":langHeader) : [f : cat e : prPad (rules e) | (f,e) <- M.assocs (entries d)] where
   prTab = concat . intersperse "\t"
   prPad rmap = [pr (M.lookup lang rmap) | lang <- langs]
   langs = allLanguages d
+  langHeader = [prTab [lang ++ " lemma", lang ++ " rule"] | lang <- langs]
   pr mrule = case mrule of
-    Just (rule:_) -> lemma rule
+    Just rs -> prTab [concat (intersperse ", " (map lemma rs)),unwords (intersperse "|" (map lin rs))]
     _ -> "-"
 
 prDictFiles :: Module -> Dictionary -> IO ()
@@ -283,11 +292,15 @@ unsemicolon = filter (/=';')
 ----------------------------
 
 test = getDictFromGFFiles [
-  "/Users/aarne/GF/lib/src/english/DictEng.gf",
-  "/Users/aarne/GF/lib/src/bulgarian/DictEngBul.gf",
-  "/Users/aarne/GF/lib/src/chinese/DictEngChi.gf",
-  "/Users/aarne/GF/lib/src/german/DictEngGer.gf"
+  dictDir ++ "/src/english/DictEng.gf",
+  dictDir ++ "/src/bulgarian/DictEngBul.gf",
+  dictDir ++ "/src/chinese/DictEngChi.gf",
+  dictDir ++ "/src/finnish/stemmed/DictEngFin.gf",
+---  dictDir ++ "/src/french/DictEngFre.gf", --- not in utf8
+  dictDir ++ "/src/german/DictEngGer.gf"
   ]
+  where
+    dictDir = "/Users/aarne/GF/lib"
 
 getDictFromGFFiles :: [FilePath] -> IO Dictionary
 getDictFromGFFiles = foldM updateDictFromGFFile initDictionary
