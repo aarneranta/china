@@ -13,7 +13,7 @@ import qualified Data.Map as M
 testGFDict :: IO ()
 testGFDict = do
   d <- getDictGFDict
-  let ds = unlines $ take 100 $ sample 500 $ prDictTab optRule d
+  let ds = unlines $ take 200 $ sample 500 $ prDictTab optRule d
   writeFile "dict.tsv" ds
 
 getDictGFDict :: IO Dictionary
@@ -22,6 +22,7 @@ getDictGFDict = getDictFromGFFiles [
   dictDir ++ "bulgarian/DictEngBul.gf",
   dictDir ++ "chinese/DictEngChi.gf",
   dictDir ++ "finnish/stemmed/DictEngFin.gf",
+  dictDir ++ "hindi/DictHinWSJ.gf",
   dictDir ++ "german/DictEngGer.gf"
   ]
   where
@@ -35,7 +36,7 @@ testWiktionary = do
   d <- getDictWiktionary
 --  putStrLn "Size of totally implemented common part:"
 --  print $ length $ prAbstract "Wikt" $ intersectDictLang (allLanguages d) d
-  let ds = unlines $ take 100 $ sample 1000 $ prDictTab optLemma d
+  let ds = unlines $ take 200 $ sample 500 $ prDictTab optLemma d
   writeFile "wikt.tsv" ds
 
 getDictWiktionary :: IO Dictionary
