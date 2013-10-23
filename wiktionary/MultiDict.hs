@@ -58,8 +58,8 @@ initDictionary = DD {
   addlincats = M.empty
   }
 
-initEntry :: Fun -> Entry
-initEntry f = EE {
+initEntry :: Fun -> Metadata -> Entry
+initEntry f m = EE {
   cat       = c,
   supercat  = getSupercat c,
   synonyms  = [],
@@ -67,7 +67,7 @@ initEntry f = EE {
   weight    = 1.0,
   word      = w,
   subwords  = ss,
-  meta      = [],
+  meta      = m,
   rules     = M.empty
   }
   where 
@@ -96,29 +96,29 @@ initRule cat s = RR {
   }
 
 
-changeRules :: Lang -> [(Fun,[Rule])] -> Dictionary -> Dictionary
+changeRules :: Lang -> [(Fun,[Rule],Metadata)] -> Dictionary -> Dictionary
 changeRules = updateRulesBy M.insert
 
-updateRules :: Lang -> [(Fun,[Rule])] -> Dictionary -> Dictionary
+updateRules :: Lang -> [(Fun,[Rule],Metadata)] -> Dictionary -> Dictionary
 updateRules = updateRulesBy (M.insertWith union)
 
-updateRulesBy :: (Lang -> [Rule] -> M.Map Lang [Rule] -> M.Map Lang [Rule]) -> Lang -> [(Fun,[Rule])] -> Dictionary -> Dictionary
+updateRulesBy :: (Lang -> [Rule] -> M.Map Lang [Rule] -> M.Map Lang [Rule]) -> Lang -> [(Fun,[Rule],Metadata)] -> Dictionary -> Dictionary
 updateRulesBy upd lang funruls dict0 = 
   let dict = case M.lookup lang (opens dict0) of    -- if the lang doesn't exist
         Just _ -> dict0
         _ -> initLang lang dict0                    -- add the lang
-      entry fun = case M.lookup fun (entries dict) of   -- if a fun doesn't exist
+      entry fun meta = case M.lookup fun (entries dict) of   -- if a fun doesn't exist
         Just e -> e
-        _ -> initEntry fun                          -- add the fun
-      addOne (fun,ruls) d = d {
-        entries = M.insert fun ((entry fun) {                   -- add the new rule
-          rules = upd lang ruls (rules (entry fun))    -- possibly on top of other rules for the same fun and lang 
+        _ -> initEntry fun meta                              -- add the fun and its metadata
+      addOne (fun,ruls,meta) d = d {
+        entries = M.insert fun ((entry fun meta) {          -- add the new rules
+          rules = upd lang ruls (rules (entry fun meta))    -- possibly on top of other rules for the same fun and lang 
           }) 
          (entries d)
          }
    in foldr addOne dict funruls
 
-updateDictionary :: [(Lang,[(Fun,[Rule])])] -> Dictionary -> Dictionary
+updateDictionary :: [(Lang,[(Fun,[Rule],Metadata)])] -> Dictionary -> Dictionary
 updateDictionary ens dict = foldr (\ (l,frs) d -> updateRules l frs d) dict ens
 
 
@@ -127,8 +127,8 @@ updateDictionary ens dict = foldr (\ (l,frs) d -> updateRules l frs d) dict ens
 -------------------
 
 
-abstractDict :: Dictionary -> M.Map Fun (Cat,Weight)
-abstractDict d = M.fromList [(f,(cat e, weight e)) | (f,e) <- M.assocs (entries d)]
+abstractDict :: Dictionary -> M.Map Fun (Cat, Weight, Metadata)
+abstractDict d = M.fromList [(f,(cat e, weight e, meta e)) | (f,e) <- M.assocs (entries d)]
 
 concreteLang :: Lang -> Dictionary -> M.Map Fun [Rule]
 concreteLang lang d = M.fromList [(f,rs) | (f,e) <- M.assocs (entries d), Just rs <- [M.lookup lang (rules e)]]
@@ -183,7 +183,7 @@ prDictFiles name d = do
 prAbstract :: Module -> Dictionary -> [String]
 prAbstract name d = 
   [unwords (["abstract",name,"="] ++ intersperse ", " (baseabs d) ++ ["**", "{"])] ++
-  [prAbsRule f c w | (f,(c,w)) <- M.assocs (abstractDict d)] ++
+  [prAbsRule f c w m | (f,(c,w,m)) <- M.assocs (abstractDict d)] ++
   ["}"]
 
 prConcrete :: Module -> Lang -> Dictionary -> [String] 
@@ -193,8 +193,8 @@ prConcrete name lang d =
   [prCncRule f rs | (f,rs) <- M.assocs (concreteLang lang d)] ++
   ["}"]
 
-prAbsRule :: Fun -> Cat -> Weight -> String
-prAbsRule f c w = unwords ["fun",f,":",c,";","--",show w]
+prAbsRule :: Fun -> Cat -> Weight -> Metadata -> String
+prAbsRule f c w m = unwords ["fun",f,":",c,";","--", prWeight w, prMetadata m]
 
 prCncRule :: Fun -> [Rule] -> String
 prCncRule f rs = 
@@ -204,6 +204,9 @@ prCncRule f rs =
 prMetadata :: Metadata -> String
 prMetadata ms = concat $ intersperse ", " [a ++ "=" ++ v | (a,v) <- ms]
 
+prWeight :: Weight -> String
+prWeight w = "weight=" ++ show w ++ ","  -- thus looks like metadata, but is internally Double and not String
+
 
 -----------------------------------
 -- getting Dict by parsing GF files
@@ -212,19 +215,19 @@ prMetadata ms = concat $ intersperse ", " [a ++ "=" ++ v | (a,v) <- ms]
 ---- TODO: use the real GF source file parser
  
 -- from one-line GF rules: (lin) work_V = mkV "arbeta" ;
-gfLine2lin :: String -> [(Fun,[Rule])]
+gfLine2lin :: String -> [(Fun,[Rule],Metadata)]
 gfLine2lin = get . words where
   get ws = case ws of
     "lin":ww   -> get ww                                           -- drop leading lin
     _  :"=":"variants":('{':'}':_):_ -> []
-    fun:"=":ww -> [(fun, map lin2rule (variants (unwords ww)))]    ---- metadata actually per rule, not per variant
+    fun:"=":ww -> [(fun, map lin2rule (variants (unwords ww)), srcMetadata "gf")]    ---- metadata actually per rule, not per variant
     _ -> [] ---error ("cannot get lin rule from " ++ unwords ws)
 
 -- this reads a GF lexicon file, accepting lines with '=' and ';'
 ---- TODO: should get opens and extends from the header, via parser
 gfFile2dictionaryUpdate :: Dictionary -> Lang -> String -> Dictionary
 gfFile2dictionaryUpdate dict lang s = 
-  updateDictionary [(lang, concatMap gfLine2lin (filter isLinRule (lines s)))] dict
+  updateDictionary [(lang, concatMap gfLine2lin (filter isLinRule (lines s)))] dict ---- TODO: abstract metadata
 
 isLinRule :: String -> Bool
 isLinRule s = elem '=' s && elem ';' s
@@ -290,10 +293,16 @@ getLang = reverse . take 3 . reverse
 variants :: String -> [String]
 variants = lines . map (\c -> if c=='|' then '\n' else c)
 
-chop :: Eq a => a -> [a] -> [[a]]
-chop c xs = case break (== c) xs of
-  (x1,_:x2@(_:_)) -> x1 : chop c x2
+chop :: Eq a => [a] -> [a] -> [[a]]
+chop cs xs = case break (flip elem cs) xs of
+  (x1,_:x2@(_:_)) -> x1 : chop cs x2
   (x1,_)          -> [x1]
+
+ignoreSegments :: Eq a => a -> a -> [a] -> [a]
+ignoreSegments beg end s = case break (==beg) s of
+  (x1,_:x2@(_:_)) -> x1 ++ case break (==end) x2 of 
+     (x3,x4) -> ignoreSegments beg end $ drop 1 x4
+  (x1,_)          -> x1
 
 normalizeSpaces :: String -> String
 normalizeSpaces = unwords . words
@@ -341,18 +350,23 @@ dictW :: Lang -> [String] -> Dictionary -> Dictionary
 dictW lang ls dict = 
   let ruls = linRulesW lang $ concatMap analyseLineW ls 
   in  
-  updateDictionary [(lang,[(fun,rs) | (fun,_,rs,_) <- ruls])] dict
+  updateDictionary [(lang,[(fun,rs,meta) | (fun,_,rs,meta) <- ruls])] dict
 
 analyseLineW :: String -> [(Fun, Cat, String, [String], Metadata)]
 analyseLineW l = do
-  let ws = filter (notElem '/') (words l)                    -- ignore pronunciation
-  if (notElem "::" ws || notElem '{' l) then fail l else do  -- ignore incomplete or ill-formatted line
+  let ws = words (ignoreSegments '/' '/' l)                  -- ignore pronunciation which is in / ... /
+  if (notElem "::" ws || notElem '{' l)
+      then fail l 
+      else do                                            -- ignore incomplete or ill-formatted line
     let (ws1,c:ws2) = span ((/= '{') . head) ws              -- English lemma and cat
     let fun = mkIdent (unwords ws1)
     let cat = catW c
     let (disamb,_:ws3) = span (/="::") ws2                   -- disambiguation part and linearizations
-    let lins = map normalizeSpaces (chop ',' (unwords ws3))  -- comma-separated lins
-    return (fun,cat,unwords disamb,lins,srcMetadata "Wiktionary")
+    if null ws3 
+        then fail l                                      -- ignore line with no lin parts
+        else do
+      let lins = chop ",;" (unwords ws3)                 -- comma-separated lins; semicolons seem to separate senses
+      return (fun,cat,unwords disamb,lins,srcMetadata "Wiktionary")
 
 -- build the final fun names and lin rules
 linRulesW :: Lang -> [(Fun, Cat, String, [String], Metadata)] -> [(Fun,Cat,[Rule],Metadata)]
@@ -363,10 +377,21 @@ linRulesW lang = map buildRule . concatMap disambFuns . groupBy sameFunCat . con
    disambFuns rs = case rs of
      [(f,c,d,ls,m)] -> [(f ++"_" ++ c, c, d, ls, m)]
      _   -> [(disambiguateFun f c d i, c, d, ls, m) | ((f,c,d,ls,m),i) <- zip rs [1..]]
-   buildRule (f,c,d,ls,m) = (f,c, map (initRule c) ls, m ++ glossMetadata d)
+   buildRule (f,c,d,ls,m) = (f,c, map (initRuleLang lang c) ls, m ++ glossMetadata d)
 
+
+---- TODO: specialize this to languages to handle multiwords, grammatical tags, etc
+initRuleLang :: Lang -> Cat -> String -> Rule
+initRuleLang lang cat = case lang of 
+  _      -> initRule cat . 
+            normalizeSpaces .
+            ignoreSegments '(' ')' .      --- ignoring rhs disambiguation
+            ignoreSegments '{' '}'        --- ignoring grammatical tags, e.g. {n} in Swe for neuter
+
+                         
+-- don't use the numbers after all, since they can differ from lang to lang
 disambiguateFun :: Fun -> Cat -> String -> Int -> Fun
-disambiguateFun f c _ i = concat $ intersperse "_" [f,show i, c]
+disambiguateFun f c d _ = concat $ intersperse "_" [f, mkIdent (take 12 (drop 1 d)),c]  --- take first 12 letters from disamb
 
 srcMetadata :: String -> Metadata
 srcMetadata s = [("src",s)]
