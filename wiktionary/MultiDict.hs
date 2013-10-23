@@ -4,6 +4,51 @@ import Control.Monad
 import qualified Data.Map as M
 
 
+----------------------------
+---- to test
+----------------------------
+
+-- Dictionary from GF DictEng*
+
+testGFDict :: IO ()
+testGFDict = do
+  d <- getDictGFDict
+  let ds = unlines $ take 100 $ sample 500 $ prDictTab optRule d
+  writeFile "dict.tsv" ds
+
+getDictGFDict :: IO Dictionary
+getDictGFDict = getDictFromGFFiles [
+  dictDir ++ "english/DictEng.gf",
+  dictDir ++ "bulgarian/DictEngBul.gf",
+  dictDir ++ "chinese/DictEngChi.gf",
+  dictDir ++ "finnish/stemmed/DictEngFin.gf",
+  dictDir ++ "german/DictEngGer.gf"
+  ]
+  where
+    dictDir = "/Users/aarne/GF/lib/src/"
+
+
+-- Dictionary from Wiktionary
+
+testWiktionary :: IO ()
+testWiktionary = do
+  d <- getDictWiktionary
+--  putStrLn "Size of totally implemented common part:"
+--  print $ length $ prAbstract "Wikt" $ intersectDictLang (allLanguages d) d
+  let ds = unlines $ take 100 $ sample 1000 $ prDictTab optLemma d
+  writeFile "wikt.tsv" ds
+
+getDictWiktionary :: IO Dictionary
+getDictWiktionary = getDictFromWiktionaries [
+  ("Bul",  wiktDir ++ "en-bg-enwiktionary.txt"),
+  ("Chi",  wiktDir ++ "en-cmn-enwiktionary.txt"),
+  ("Fin",  wiktDir ++ "en-fi-enwiktionary.txt"),
+  ("Ger",  wiktDir ++ "en-de-enwiktionary.txt"),
+  ("Swe",  wiktDir ++ "en-sv-enwiktionary.txt")
+  ]
+  where wiktDir = "/Users/aarne/wiktionary/ding/"
+
+
 --------------
 -- datatypes
 ---------------
@@ -165,15 +210,26 @@ prDictDict = prDictFiles "Dict"
 
 -- print tab-separated (.tsv) table
 -- structure: Abstract, Category, Bul lemma, Bul rule, Eng lemma, Eng rule, ...
-prDictTab :: Dictionary -> [String]
-prDictTab d = map prTab $ ("Abstract":"Category":langHeader) : [f : cat e : prPad (rules e) | (f,e) <- M.assocs (entries d)] where
+prDictTab :: TabOptions -> Dictionary -> [String]
+prDictTab opts d = map prTab $ ("Abstract":"Category":langHeader) : [f : cat e : prPad (rules e) | (f,e) <- M.assocs (entries d)] where
   prTab = concat . intersperse "\t"
   prPad rmap = [pr (M.lookup lang rmap) | lang <- langs]
   langs = allLanguages d
-  langHeader = [prTab [lang ++ " lemma", lang ++ " rule"] | lang <- langs]
-  pr mrule = case mrule of
-    Just rs -> prTab [concat (intersperse ", " (map lemma rs)),unwords (intersperse "|" (map lin rs))]
-    _ -> "-"
+  chooseOpt lr = case opts of  --- [lemma,rule]
+    _ | opts == optAll   -> lr
+    _ | opts == optRule  -> drop 1 lr
+    _ | opts == optLemma -> take 1 lr
+  langHeader = [prTab (chooseOpt [lang ++ " lemma", lang ++ " rule"]) | lang <- langs]
+  pr mrule = prTab $ chooseOpt $ case mrule of
+    Just rs -> [concat (intersperse ", " (map lemma rs)),unwords (intersperse "|" (map lin rs))]
+    _ -> ["-","-"]
+
+type TabOptions = Int --- just the option of showing lemmas vs. rules
+optAll, optRule, optLemma :: TabOptions
+optAll = 0
+optRule = 1
+optLemma = 2
+
 
 prDictFiles :: Module -> Dictionary -> IO ()
 prDictFiles name d = do
@@ -208,29 +264,8 @@ prWeight :: Weight -> String
 prWeight w = "weight=" ++ show w ++ ","  -- thus looks like metadata, but is internally Double and not String
 
 
------------------------------------
--- getting Dict by parsing GF files
------------------------------------
 
----- TODO: use the real GF source file parser
- 
--- from one-line GF rules: (lin) work_V = mkV "arbeta" ;
-gfLine2lin :: String -> [(Fun,[Rule],Metadata)]
-gfLine2lin = get . words where
-  get ws = case ws of
-    "lin":ww   -> get ww                                           -- drop leading lin
-    _  :"=":"variants":('{':'}':_):_ -> []
-    fun:"=":ww -> [(fun, map lin2rule (variants (unwords ww)), srcMetadata "gf")]    ---- metadata actually per rule, not per variant
-    _ -> [] ---error ("cannot get lin rule from " ++ unwords ws)
 
--- this reads a GF lexicon file, accepting lines with '=' and ';'
----- TODO: should get opens and extends from the header, via parser
-gfFile2dictionaryUpdate :: Dictionary -> Lang -> String -> Dictionary
-gfFile2dictionaryUpdate dict lang s = 
-  updateDictionary [(lang, concatMap gfLine2lin (filter isLinRule (lines s)))] dict ---- TODO: abstract metadata
-
-isLinRule :: String -> Bool
-isLinRule s = elem '=' s && elem ';' s
 
 -------------------
 -- utilities
@@ -307,20 +342,32 @@ ignoreSegments beg end s = case break (==beg) s of
 normalizeSpaces :: String -> String
 normalizeSpaces = unwords . words
 
-----------------------------
----- to test
-----------------------------
+sample :: Int -> [a] -> [a]
+sample k xs = [xs !! i | i <- [0,k .. length xs - 1]]
 
-test = getDictFromGFFiles [
-  dictDir ++ "/src/english/DictEng.gf",
-  dictDir ++ "/src/bulgarian/DictEngBul.gf",
-  dictDir ++ "/src/chinese/DictEngChi.gf",
-  dictDir ++ "/src/finnish/stemmed/DictEngFin.gf",
----  dictDir ++ "/src/french/DictEngFre.gf", --- not in utf8
-  dictDir ++ "/src/german/DictEngGer.gf"
-  ]
-  where
-    dictDir = "/Users/aarne/GF/lib"
+-----------------------------------
+-- getting Dict by parsing GF files
+-----------------------------------
+
+---- TODO: use the real GF source file parser
+ 
+-- from one-line GF rules: (lin) work_V = mkV "arbeta" ;
+gfLine2lin :: String -> [(Fun,[Rule],Metadata)]
+gfLine2lin = get . words where
+  get ws = case ws of
+    "lin":ww   -> get ww                                           -- drop leading lin
+    _  :"=":"variants":('{':'}':_):_ -> []
+    fun:"=":ww -> [(fun, map lin2rule (variants (unwords ww)), srcMetadata "gf")]    ---- metadata actually per rule, not per variant
+    _ -> [] ---error ("cannot get lin rule from " ++ unwords ws)
+
+-- this reads a GF lexicon file, accepting lines with '=' and ';'
+---- TODO: should get opens and extends from the header, via parser
+gfFile2dictionaryUpdate :: Dictionary -> Lang -> String -> Dictionary
+gfFile2dictionaryUpdate dict lang s = 
+  updateDictionary [(lang, concatMap gfLine2lin (filter isLinRule (lines s)))] dict ---- TODO: abstract metadata
+
+isLinRule :: String -> Bool
+isLinRule s = elem '=' s && elem ';' s
 
 getDictFromGFFiles :: [FilePath] -> IO Dictionary
 getDictFromGFFiles = foldM updateDictFromGFFile initDictionary
@@ -331,11 +378,6 @@ updateDictFromGFFile dict0 file = do
   let lang = getLang $ getModule file
   return $ gfFile2dictionaryUpdate dict0 lang s
 
-
--- example from Wiktionary:
--- *Main> w <- readFile "en-cmn-enwiktionary.txt" >>= return . lines
--- *Main> let d = dictW "Chi" w initDictionary
--- *Main> putStrLn $ unlines $ take 100 $ prConcrete "Wikt" "Chi" d
 
 
 -------------------------------------
@@ -411,3 +453,15 @@ catW s = case (init (tail s)) of
   "proverb" -> "Utt"
   "determiner" -> "Det"
   _ -> "Word"  -- the catch-all category
+
+
+getDictFromWiktionaries :: [(Lang,FilePath)] -> IO Dictionary
+getDictFromWiktionaries = foldM updateDictFromWiktionary initDictionary
+
+updateDictFromWiktionary :: Dictionary -> (Lang,FilePath) -> IO Dictionary
+updateDictFromWiktionary dict0 (lang,file) = do
+  s <- readFile file
+  return $ wiktionary2dictionaryUpdate dict0 lang s
+
+wiktionary2dictionaryUpdate :: Dictionary -> Lang -> String -> Dictionary
+wiktionary2dictionaryUpdate dict lang s = dictW lang (lines s) dict
