@@ -49,6 +49,7 @@ getDictWiktionary = getDictFromWiktionaries [
   ("Bul",  wiktDir ++ "en-bg-enwiktionary.txt"),
   ("Cat",  wiktDir ++ "en-ca-enwiktionary.txt"),
   ("Chi",  wiktDir ++ "en-cmn-enwiktionary.txt"),
+  ("Eng",  wiktDir ++ "en-en-enwiktionary.txt"),
   ("Fin",  wiktDir ++ "en-fi-enwiktionary.txt"),
   ("Ger",  wiktDir ++ "en-de-enwiktionary.txt"),
   ("Gre",  wiktDir ++ "en-el-enwiktionary.txt"),
@@ -86,6 +87,7 @@ data Rule = RR {
 data Entry = EE {        -- example: fun watch_supervise_V2 
   cat       :: Cat,                  -- V2
   supercat  :: Cat,                  -- V
+  subcats   :: [Cat],                -- possible subcats, obtained from some other source
   synonyms  :: [Fun],                -- supervise_watch_V2
   hypernyms :: [Fun],                -- observe_V2
   weight    :: Weight,               -- probability or other weight
@@ -122,7 +124,8 @@ initDictionary = DD {
 initEntry :: Fun -> Metadata -> Entry
 initEntry f m = EE {
   cat       = c,
-  supercat  = getSupercat c,
+  supercat  = cat2supercat c,
+  subcats   = [],
   synonyms  = [],
   hypernyms = [],
   weight    = 1.0,
@@ -294,11 +297,19 @@ analyseFun s = case words (map (\c -> if c == '_' then ' ' else c) s) of
   ws@(_:_:_) -> (head ws, tail (init ws), last ws)
   _          -> (s,[],"Word")  -- default category
 
+fun2cat :: Fun -> Cat
+fun2cat f = case analyseFun f of (_,_,c) -> c
+
+fun2lexPart :: Fun -> Cat
+fun2lexPart f = case analyseFun f of (f,gs,_) -> glueIdents $ f:gs
 
 -- takes V2 and V2V to V
-getSupercat :: Cat -> Cat
-getSupercat = take 1
+cat2supercat :: Cat -> Cat
+cat2supercat = take 1
 
+-- concat idents with "_" in between
+glueIdents :: [String] -> String
+glueIdents = concat . intersperse "_"
 
 -- Dict ++ Eng = DictEng
 langModule :: Module -> Lang -> Module
@@ -433,9 +444,9 @@ linRulesW lang = map buildRule . concatMap disambFuns . groupBy sameFunCat . con
    getCats r = [r]  ---- TODO: look up subcategories of verbs and expand verb entries accordingly
    sameFunCat (f1,c1,_,_,_) (f2,c2,_,_,_) = f1==f2 && c1==c2
    disambFuns rs = case rs of
-     [(f,c,d,ls,m)] -> [(f ++"_" ++ c, c, d, ls, m)]
-     _   -> [(disambiguateFun f c d i, c, d, ls, m) | ((f,c,d,ls,m),i) <- zip rs [1..]]
-   buildRule (f,c,d,ls,m) = (f,c, map (initRuleLang lang c) ls, m ++ glossMetadata d)
+     [(f,c,d,ls,m)] -> [(f,glueIdents [f,c], c, d, ls, m)]
+     _   -> [(f,disambiguateFun f c d i, c, d, ls, m) | ((f,c,d,ls,m),i) <- zip rs [1..]]   -- save the bare word in metadata
+   buildRule (o,f,c,d,ls,m) = (f,c, map (initRuleLang lang c) ls, m ++ glossMetadata d ++ [("bare",o)])
 
 
 ---- TODO: specialize this to languages to handle multiwords, grammatical tags, etc
@@ -449,7 +460,7 @@ initRuleLang lang cat = case lang of
                          
 -- don't use the numbers after all, since they can differ from lang to lang
 disambiguateFun :: Fun -> Cat -> String -> Int -> Fun
-disambiguateFun f c d _ = concat $ intersperse "_" [f, mkIdent (take 12 (drop 1 d)),c]  --- take first 12 letters from disamb
+disambiguateFun f c d _ = glueIdents [f, mkIdent (take 12 (drop 1 d)),c]  --- take first 12 letters from disamb
 
 srcMetadata :: String -> Metadata
 srcMetadata s = [("src",s)]
@@ -481,3 +492,28 @@ updateDictFromWiktionary dict0 (lang,file) = do
 
 wiktionary2dictionaryUpdate :: Dictionary -> Lang -> String -> Dictionary
 wiktionary2dictionaryUpdate dict lang s = dictW lang (lines s) dict
+
+
+
+--------------------------
+--- subcategory annotation
+--------------------------
+
+-- answer to question: which subcats are given to this fun-cat combination, e.g. to this verb
+type FunMap = M.Map (Fun,Cat) [Cat]  -- e.g. walk_V -> V,V2
+
+funs2funMap :: [Fun] -> FunMap
+funs2funMap fs = M.fromListWith union [((glueIdents (h:gs), cat2supercat c),  [c]) | f <- fs, let (h,gs,c) = analyseFun f]
+
+-- file with lines of form 'abbreviate_V2 : V2 ;' can be generated in GF with 'pg -funs'
+getFunMap :: FilePath -> IO FunMap
+getFunMap file = do
+  s <- readFile file
+  return $ funs2funMap [w | w:_ <- map words (lines s)]
+
+getDictFunMap :: IO FunMap
+getDictFunMap = getFunMap "dictfuns.txt"
+
+-- [(i,length [wc| wc@(_,c) <- Data.Map.assocs fm, length c > i]) | i <- [1..]]
+-- [(1,2964),(2,322),(3,118),(4,40),(5,9),(6,3),(7,2),(8,0)]
+
