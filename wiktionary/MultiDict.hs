@@ -42,14 +42,12 @@ testWiktionary = do
   let ds = unlines $ take 200 $ sample 500 $ prDictTab optLemma d
   writeFile "wikt-sample.tsv" ds
 
-
-
 getDictWiktionary :: IO Dictionary
 getDictWiktionary = getDictFromWiktionaries [
+  ("Eng",             "en-en-enwiktionary.txt"),
   ("Bul",  wiktDir ++ "en-bg-enwiktionary.txt"),
   ("Cat",  wiktDir ++ "en-ca-enwiktionary.txt"),
   ("Chi",  wiktDir ++ "en-cmn-enwiktionary.txt"),
-  ("Eng",  wiktDir ++ "en-en-enwiktionary.txt"),
   ("Fin",  wiktDir ++ "en-fi-enwiktionary.txt"),
   ("Ger",  wiktDir ++ "en-de-enwiktionary.txt"),
   ("Gre",  wiktDir ++ "en-el-enwiktionary.txt"),
@@ -191,6 +189,15 @@ updateDictionary ens dict = foldr (\ (l,frs) d -> updateRules l frs d) dict ens
 -------------------
 
 
+statisticsDict :: Dictionary -> Metadata
+statisticsDict dict = [
+  ("funs",   show $ length $ M.keys $ entries dict),
+  ("shared", show $ length $ M.keys $ entries $ intersectDict dict),
+  ("langs", show $ length $ allLanguages dict)
+  ] ++ 
+  [("lins" ++ lang, show $ length $ M.assocs $ concreteLang lang dict) 
+      | lang <- allLanguages dict]
+
 abstractDict :: Dictionary -> M.Map Fun (Cat, Weight, Metadata)
 abstractDict d = M.fromList [(f,(cat e, weight e, meta e)) | (f,e) <- M.assocs (entries d)]
 
@@ -299,6 +306,9 @@ analyseFun s = case words (map (\c -> if c == '_' then ' ' else c) s) of
 
 fun2cat :: Fun -> Cat
 fun2cat f = case analyseFun f of (_,_,c) -> c
+
+fun2firstpart :: Fun -> Fun
+fun2firstpart f = case analyseFun f of (f,_,_) -> f
 
 fun2lexPart :: Fun -> Cat
 fun2lexPart f = case analyseFun f of (f,gs,_) -> glueIdents $ f:gs
@@ -435,6 +445,7 @@ analyseLineW l = do
         then fail l                                      -- ignore line with no lin parts
         else do
       let lins = chop ",;" (unwords ws3)                 -- comma-separated lins; semicolons seem to separate senses
+      --- let lins = [unwords ws1]                                   --- use this to get Eng from any en-xx
       return (fun,cat,unwords disamb,lins,srcMetadata "Wiktionary")
 
 -- build the final fun names and lin rules
@@ -516,4 +527,14 @@ getDictFunMap = getFunMap "dictfuns.txt"
 
 -- [(i,length [wc| wc@(_,c) <- Data.Map.assocs fm, length c > i]) | i <- [1..]]
 -- [(1,2964),(2,322),(3,118),(4,40),(5,9),(6,3),(7,2),(8,0)]
+
+annotateSubcat :: FunMap -> Dictionary -> Dictionary
+annotateSubcat funmap dict = dict {
+  entries = M.mapWithKey addSubcats (entries dict)
+  }
+ where
+  addSubcats f e = e {
+    subcats = union (subcats e) (maybe [] id (M.lookup (funb f e) funmap))
+    }
+  funb f e = (fun2firstpart f,cat e) --- might miss a multiword fun in funmap
 
