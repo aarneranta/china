@@ -34,17 +34,32 @@ getDictGFDict = getDictFromGFFiles [
 testWiktionary :: IO ()
 testWiktionary = do
   d <- getDictWiktionary
---  putStrLn "Size of totally implemented common part:"
---  print $ length $ prAbstract "Wikt" $ intersectDictLang (allLanguages d) d
+  let isd = intersectDictLang (allLanguages d) d
+  putStrLn "Size of totally implemented common part:"
+  print $ length $ prAbstract "Wikt" $ isd
+  let ids = unlines $ prDictTab optLemma isd
+  writeFile "wikt-intersection.tsv" ids
   let ds = unlines $ take 200 $ sample 500 $ prDictTab optLemma d
-  writeFile "wikt.tsv" ds
+  writeFile "wikt-sample.tsv" ds
+
+
 
 getDictWiktionary :: IO Dictionary
 getDictWiktionary = getDictFromWiktionaries [
   ("Bul",  wiktDir ++ "en-bg-enwiktionary.txt"),
+  ("Cat",  wiktDir ++ "en-ca-enwiktionary.txt"),
   ("Chi",  wiktDir ++ "en-cmn-enwiktionary.txt"),
   ("Fin",  wiktDir ++ "en-fi-enwiktionary.txt"),
   ("Ger",  wiktDir ++ "en-de-enwiktionary.txt"),
+  ("Gre",  wiktDir ++ "en-el-enwiktionary.txt"),
+  ("Ita",  wiktDir ++ "en-it-enwiktionary.txt"),
+  ("Jpn",  wiktDir ++ "en-ja-enwiktionary.txt"),
+  ("Dut",  wiktDir ++ "en-nl-enwiktionary.txt"),
+  ("Nor",  wiktDir ++ "en-no-enwiktionary.txt"),
+  ("Pol",  wiktDir ++ "en-pl-enwiktionary.txt"),
+  ("Ron",  wiktDir ++ "en-ro-enwiktionary.txt"),
+  ("Rus",  wiktDir ++ "en-ru-enwiktionary.txt"),
+  ("Spa",  wiktDir ++ "en-es-enwiktionary.txt"),
   ("Swe",  wiktDir ++ "en-sv-enwiktionary.txt")
   ]
   where wiktDir = "/Users/aarne/wiktionary/ding/"
