@@ -8,6 +8,9 @@ import qualified Data.Map as M
 ---- to test
 ----------------------------
 
+myGFDictDir = "/Users/aarne/GF/lib/src/"
+myWiktDir = "/Users/aarne/wiktionary/ding/"
+
 -- Dictionary from GF DictEng*
 
 testGFDict :: IO ()
@@ -18,15 +21,16 @@ testGFDict = do
 
 getDictGFDict :: IO Dictionary
 getDictGFDict = getDictFromGFFiles [
-  dictDir ++ "english/DictEng.gf",
-  dictDir ++ "bulgarian/DictEngBul.gf",
-  dictDir ++ "chinese/DictEngChi.gf",
-  dictDir ++ "finnish/stemmed/DictEngFin.gf",
-  dictDir ++ "hindi/DictHinWSJ.gf",
-  dictDir ++ "german/DictEngGer.gf"
+  myGFDictDir ++ "english/DictEng.gf",
+  myGFDictDir ++ "bulgarian/DictEngBul.gf",
+  myGFDictDir ++ "chinese/DictEngChi.gf",
+  myGFDictDir ++ "finnish/DictEngFin.gf",
+  myGFDictDir ++ "french/DictEngFre.gf",
+  myGFDictDir ++ "german/DictEngGer.gf",
+  myGFDictDir ++ "hindi/DictEngHin.gf",
+  myGFDictDir ++ "swedish/DictEngSwe.gf",
+  myGFDictDir ++ "urdu/DictEngUrd.gf"
   ]
-  where
-    dictDir = "/Users/aarne/GF/lib/src/"
 
 
 -- Dictionary from Wiktionary
@@ -45,23 +49,24 @@ testWiktionary = do
 getDictWiktionary :: IO Dictionary
 getDictWiktionary = getDictFromWiktionaries [
   ("Eng",             "en-en-enwiktionary.txt"),
-  ("Bul",  wiktDir ++ "en-bg-enwiktionary.txt"),
-  ("Cat",  wiktDir ++ "en-ca-enwiktionary.txt"),
-  ("Chi",  wiktDir ++ "en-cmn-enwiktionary.txt"),
-  ("Fin",  wiktDir ++ "en-fi-enwiktionary.txt"),
-  ("Ger",  wiktDir ++ "en-de-enwiktionary.txt"),
-  ("Gre",  wiktDir ++ "en-el-enwiktionary.txt"),
-  ("Ita",  wiktDir ++ "en-it-enwiktionary.txt"),
-  ("Jpn",  wiktDir ++ "en-ja-enwiktionary.txt"),
-  ("Dut",  wiktDir ++ "en-nl-enwiktionary.txt"),
-  ("Nor",  wiktDir ++ "en-no-enwiktionary.txt"),
-  ("Pol",  wiktDir ++ "en-pl-enwiktionary.txt"),
-  ("Ron",  wiktDir ++ "en-ro-enwiktionary.txt"),
-  ("Rus",  wiktDir ++ "en-ru-enwiktionary.txt"),
-  ("Spa",  wiktDir ++ "en-es-enwiktionary.txt"),
-  ("Swe",  wiktDir ++ "en-sv-enwiktionary.txt")
+  ("Bul",  myWiktDir ++ "en-bg-enwiktionary.txt"),
+  ("Cat",  myWiktDir ++ "en-ca-enwiktionary.txt"),
+  ("Chi",  myWiktDir ++ "en-cmn-enwiktionary.txt"),
+  ("Fin",  myWiktDir ++ "en-fi-enwiktionary.txt"),
+  ("Ger",  myWiktDir ++ "en-de-enwiktionary.txt"),
+  ("Gre",  myWiktDir ++ "en-el-enwiktionary.txt"),
+  ("Hin",  myWiktDir ++ "en-hi-enwiktionary.txt"),
+  ("Ita",  myWiktDir ++ "en-it-enwiktionary.txt"),
+  ("Jpn",  myWiktDir ++ "en-ja-enwiktionary.txt"),
+  ("Dut",  myWiktDir ++ "en-nl-enwiktionary.txt"),
+  ("Nor",  myWiktDir ++ "en-no-enwiktionary.txt"),
+  ("Pol",  myWiktDir ++ "en-pl-enwiktionary.txt"),
+  ("Ron",  myWiktDir ++ "en-ro-enwiktionary.txt"),
+  ("Rus",  myWiktDir ++ "en-ru-enwiktionary.txt"),
+  ("Spa",  myWiktDir ++ "en-es-enwiktionary.txt"),
+  ("Swe",  myWiktDir ++ "en-sv-enwiktionary.txt")
   ]
-  where wiktDir = "/Users/aarne/wiktionary/ding/"
+
 
 
 --------------
@@ -538,3 +543,14 @@ annotateSubcat funmap dict = dict {
     }
   funb f e = (fun2firstpart f,cat e) --- might miss a multiword fun in funmap
 
+
+
+--------------------------------
+-- Populate Dict from Wiktionary
+--------------------------------
+
+getDictFromWikt :: IO Dictionary
+getDictFromWikt = do
+  dict <- getDictFromGFFiles      [           myGFDictDir ++ "swedish/DictEngSwe.gf"]
+  wikt <- getDictFromWiktionaries [("Swe",    myWiktDir ++ "en-sv-enwiktionary.txt")]
+  return dict ----
