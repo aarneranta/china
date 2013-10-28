@@ -551,6 +551,28 @@ annotateSubcat funmap dict = dict {
 
 getDictFromWikt :: IO Dictionary
 getDictFromWikt = do
-  dict <- getDictFromGFFiles      [           myGFDictDir ++ "swedish/DictEngSwe.gf"]
-  wikt <- getDictFromWiktionaries [("Swe",    myWiktDir ++ "en-sv-enwiktionary.txt")]
-  return dict ----
+
+  let (language, lang,la) = ("swedish", "Swe", "sv")
+
+  dict0 <- getDictFromGFFiles      [myGFDictDir ++ "english/DictEng.gf",  myGFDictDir ++ language ++ "/DictEng" ++ lang ++ ".gf"]
+  print $ statisticsDict dict0
+
+  wikt0 <- getDictFromWiktionaries [(lang,    myWiktDir ++ "en-" ++ la ++ "-enwiktionary.txt")]
+  print $ statisticsDict wikt0
+
+  funmap <- getDictFunMap
+  let wikt1 = annotateSubcat funmap wikt0
+
+  let wiktfuns = [(f,e) | (f0,e) <- M.assocs (entries wikt1)
+                                  , f <- [glueIdents [fun2firstpart f0, c] | c <- cat e : subcats e]
+                                  , Just ed <- [M.lookup f (entries dict0)]          -- f is in dict abstract
+                                  , Nothing <- [M.lookup lang (rules ed)]            -- f is not yet in dict for this lang
+                                 ] 
+  print $ length wiktfuns
+  
+  let dict1 = updateRules lang [(f, rs, srcMetadata "wiktionary") | (f,e) <- wiktfuns, Just rs <- [M.lookup lang (rules e)]] dict0
+
+  putStrLn $ unlines $ prConcrete "DictEng" lang dict1
+
+  return dict1
+
