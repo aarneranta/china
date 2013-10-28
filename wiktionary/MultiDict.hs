@@ -276,7 +276,7 @@ prAbstract name d =
 prConcrete :: Module -> Lang -> Dictionary -> [String] 
 prConcrete name lang d = 
   [unwords (["concrete",langModule name lang,"of", name, "="] ++ intersperse ", " (lookIf (basecncs d) lang))] ++
-  [unwords (["**","open"] ++ intersperse ", " (lookIf (opens d) lang) ++ ["{"])] ++
+  [unwords (["**","open"] ++ intersperse ", " (lookIf (opens d) lang) ++ ["in", "{"])] ++
   [prCncRule f rs | (f,rs) <- M.assocs (concreteLang lang d)] ++
   ["}"]
 
@@ -320,7 +320,11 @@ fun2lexPart f = case analyseFun f of (f,gs,_) -> glueIdents $ f:gs
 
 -- takes V2 and V2V to V
 cat2supercat :: Cat -> Cat
-cat2supercat = take 1
+cat2supercat c = case c of
+  'V':_ -> take 1 c
+  'N':i:[] | isDigit i -> "N"
+  'A':i:[] | isDigit i -> "A"
+  _ -> c
 
 -- concat idents with "_" in between
 glueIdents :: [String] -> String
@@ -566,14 +570,54 @@ wrapCatLin :: Cat -> String -> String
 wrapCatLin c s = "mk" ++ c ++ " (" ++ s ++ ")"
 
 
+---------------------------------
+-- lookup from morphological Dict
+---------------------------------
+
+type MorphoMap = M.Map (String,Cat) Fun
+
+lookupMorpho :: (String,Cat) -> MorphoMap -> String
+lookupMorpho sc@(s,c) mm = case M.lookup sc mm of
+  Just f -> f
+  _ -> mkLin c s
+
+mkMorphoMap :: Lang -> [String] -> MorphoMap
+mkMorphoMap lang = M.fromList . map mkOne . filter (\ws -> elem "=" ws) . map words where
+  mkOne ws = case ws of
+    "lin":f:_ -> mkOne [f]
+    "fun":f:_ -> mkOne [f]
+    f:_       -> case analyseFun f of (i,_,c) -> ((charMap lang i, c),f)
+
+charMap :: Lang -> String -> String
+charMap lang s = case lang of
+  "Swe" -> concatMap mapChar s where
+     mapChar c = case c of
+       'å' -> "aa"
+       'ä' -> "ae"
+       'ö' -> "oe"
+       _   -> [c]
+  _ -> s
+
+annotateMorpho :: Lang -> MorphoMap -> Dictionary -> Dictionary
+annotateMorpho lang morpho dict = 
+    changeRules lang [foundLins (cat e) f rs | (f,e) <- M.assocs (entries dict),  Just rs <- [M.lookup lang (rules e)]] dict 
+  where
+    foundLins c f rs = (f, map (newLin c) rs, [("status","morphodict")]) ---- TODO metadata only where true
+    newLin c r = r {
+      lin = case M.lookup (lemma r,c) morpho of
+        Just g -> g
+        _ -> lin r
+      }
+
 --------------------------------
 -- Populate Dict from Wiktionary
 --------------------------------
 
-getDictFromWikt :: IO Dictionary
-getDictFromWikt = do
+getDictFromWiktSwe :: IO Dictionary
+getDictFromWiktSwe = getDictFromWikt ("swedish", "Swe", "sv")
 
-  let (language, lang,la) = ("swedish", "Swe", "sv")
+getDictFromWikt :: (String,String,String) -> IO Dictionary
+getDictFromWikt (language, lang,la) = do
 
   dict0 <- getDictFromGFFiles      [myGFDictDir ++ "english/DictEng.gf",  myGFDictDir ++ language ++ "/DictEng" ++ lang ++ ".gf"]
   print $ statisticsDict dict0
@@ -581,21 +625,24 @@ getDictFromWikt = do
   wikt0 <- getDictFromWiktionaries [(lang,    myWiktDir ++ "en-" ++ la ++ "-enwiktionary.txt")]
   print $ statisticsDict wikt0
 
-  funmap <- getDictFunMap
-  let wikt1 = annotateSubcat funmap wikt0
+  morpho <- readFile (myGFDictDir ++ language ++ "/Dict" ++ lang ++ ".gf") >>= return . mkMorphoMap lang . lines
+  let wikt1 = annotateMorpho lang morpho wikt0  
 
-  let wiktfuns = [(f,e{cat = c, subcats = []}) | (f0,e) <- M.assocs (entries wikt1)
+  funmap <- getDictFunMap
+  let wikt2 = annotateSubcat funmap wikt1
+
+  let wiktfuns = [(f,e{cat = c, subcats = []}) | (f0,e) <- M.assocs (entries wikt2)
                                   , (c,f)   <- [(c,glueIdents [fun2firstpart f0, c]) | c <- cat e : subcats e]
                                   , Just ed <- [M.lookup f (entries dict0)]          -- f is in dict abstract
                                   , Nothing <- [M.lookup lang (rules ed)]            -- f is not yet in dict for this lang
                                  ] 
   print $ length wiktfuns
-  
+
   let dict1 = updateRules lang [(f, map (wrapSubcatLin (cat e)) rs, srcMetadata "wiktionary") | 
                                     (f,e) <- wiktfuns, Just rs <- [M.lookup lang (rules e)]] dict0
 
   let outfile = unlines $ prConcrete "WDictEng" lang dict1
-  writeFile "WDictEngSwe.gf" outfile
+  writeFile ("WDictEng" ++ lang ++ ".gf") outfile
 
   return dict1
 
