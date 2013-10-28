@@ -468,10 +468,23 @@ linRulesW lang = map buildRule . concatMap disambFuns . groupBy sameFunCat . con
 ---- TODO: specialize this to languages to handle multiwords, grammatical tags, etc
 initRuleLang :: Lang -> Cat -> String -> Rule
 initRuleLang lang cat = case lang of 
-  _      -> initRule cat . 
+  _      -> initRuleLangW lang cat . 
             normalizeSpaces .
             ignoreSegments '(' ')' .      --- ignoring rhs disambiguation
             ignoreSegments '{' '}'        --- ignoring grammatical tags, e.g. {n} in Swe for neuter
+
+initRuleLangW :: Lang -> Cat -> String -> Rule
+initRuleLangW lang cat s = case (lang,cat) of 
+  (_, 'V':sc) -> RR {
+    lemma = s,
+    lin   = case (sc,words s) of 
+              (_:_, s1:s2@(_:_)) -> "mk" ++ cat ++ " (mkV (" ++ mkLin "V" s1 ++ ") \"" ++ unwords s2 ++ "\")"  -- mkV2 (mkV (mkV "look") "up")
+              (_,   s1:s2@(_:_)) ->                  "mkV (" ++ mkLin "V" s1 ++ ") \"" ++ unwords s2 ++ "\""   --       mkV (mkV "look") "up"
+              (_:_, _          ) -> "mk" ++ cat ++ " ("      ++ mkLin "V" s  ++ ")"                            -- mkV2 (mkV "look")
+              _                  -> mkLin "V" s,                                                               --       mkV "look" 
+    metar = [("status","guess"),("src","wikt")]
+    }
+  _ -> initRule cat s
 
                          
 -- don't use the numbers after all, since they can differ from lang to lang
@@ -544,6 +557,14 @@ annotateSubcat funmap dict = dict {
   funb f e = (fun2firstpart f,cat e) --- might miss a multiword fun in funmap
 
 
+wrapSubcatLin :: Cat -> Rule -> Rule
+wrapSubcatLin cat r = case cat of
+  'V':_:_ -> r{lin = wrapCatLin cat (lin r)} ---- TODO other subcats?
+  _ -> r
+
+wrapCatLin :: Cat -> String -> String
+wrapCatLin c s = "mk" ++ c ++ " (" ++ s ++ ")"
+
 
 --------------------------------
 -- Populate Dict from Wiktionary
@@ -563,16 +584,18 @@ getDictFromWikt = do
   funmap <- getDictFunMap
   let wikt1 = annotateSubcat funmap wikt0
 
-  let wiktfuns = [(f,e) | (f0,e) <- M.assocs (entries wikt1)
-                                  , f <- [glueIdents [fun2firstpart f0, c] | c <- cat e : subcats e]
+  let wiktfuns = [(f,e{cat = c, subcats = []}) | (f0,e) <- M.assocs (entries wikt1)
+                                  , (c,f)   <- [(c,glueIdents [fun2firstpart f0, c]) | c <- cat e : subcats e]
                                   , Just ed <- [M.lookup f (entries dict0)]          -- f is in dict abstract
                                   , Nothing <- [M.lookup lang (rules ed)]            -- f is not yet in dict for this lang
                                  ] 
   print $ length wiktfuns
   
-  let dict1 = updateRules lang [(f, rs, srcMetadata "wiktionary") | (f,e) <- wiktfuns, Just rs <- [M.lookup lang (rules e)]] dict0
+  let dict1 = updateRules lang [(f, map (wrapSubcatLin (cat e)) rs, srcMetadata "wiktionary") | 
+                                    (f,e) <- wiktfuns, Just rs <- [M.lookup lang (rules e)]] dict0
 
-  putStrLn $ unlines $ prConcrete "DictEng" lang dict1
+  let outfile = unlines $ prConcrete "WDictEng" lang dict1
+  writeFile "WDictEngSwe.gf" outfile
 
   return dict1
 
